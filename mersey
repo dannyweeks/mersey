@@ -12,8 +12,10 @@ use Weeks\Mersey\Exceptions\MerseyAppException;
 use Weeks\Mersey\Mersey as MerseyApp;
 use Weeks\Mersey\Services\JsonValidator;
 
+$homeDir = getenv('HOME');
+
 // check for global installation
-$globalSchema = '~/.composer/vendor/dannyweeks/mersey/schema.json';
+$globalSchema = $homeDir . '/.composer/vendor/dannyweeks/mersey/schema.json';
 if (file_exists($globalSchema)) {
     $schema = $globalSchema;
 } else {
@@ -25,7 +27,7 @@ $app = new MerseyApp($console, new JsonValidator($schema));
 
 try {
 
-    $app->loadServersFromJson('~/.mersey/servers.json');
+    $app->loadServersFromJson($homeDir . '/.mersey/servers.json');
     $app->run();
 
 } catch (MerseyAppException $e) {
