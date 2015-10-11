@@ -1,6 +1,9 @@
 {
     "name": "danny/mersey",
     "description": "Establish ssh connections to quickly to any registered servers.",
+    "keywords": ["ssh"],
+    "type": "project",
+    "license": "MIT",
     "authors": [
         {
             "name": "Danny Weeks",
