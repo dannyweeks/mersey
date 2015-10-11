@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Weeks\Mersey\Console;
+use Weeks\Mersey\Exceptions\MerseyAppException;
+use Weeks\Mersey\Mersey as MerseyApp;
+use Weeks\Mersey\Services\JsonValidator;
+
+$console = new Console('Mersey', '1.0');
+$app = new MerseyApp($console, new JsonValidator('schema.json'));
+
+try {
+
+    $app->loadServersFromJson('servers.json');
+    $app->run();
+
+} catch (MerseyAppException $e) {
+
+    $app->renderException($e);
+    die();
+
+}
+

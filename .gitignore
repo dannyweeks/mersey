@@ -1,0 +1,5 @@
+vendor/
+.idea/
+ssh/id_rsa
+ssh/id_rsa.pub
+servers.json

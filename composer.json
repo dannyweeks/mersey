@@ -1,0 +1,32 @@
+{
+    "name": "danny/mersey",
+    "description": "Establish ssh connections to quickly to any registered servers.",
+    "authors": [
+        {
+            "name": "Danny Weeks",
+            "email": "danny@dannyweeks.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Weeks\\Mersey\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": ["tests/TestCase.php"]
+    },
+    "require": {
+        "symfony/console": "^2.7",
+        "justinrainbow/json-schema": "^1.5",
+        "illuminate/support": "^5.1",
+        "geerlingguy/ping": "^1.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^2.7",
+        "phpunit/phpunit": "^5.0",
+        "mockery/mockery": "^0.9.4"
+    },
+    "bin": [
+        "mersey"
+    ]
+}

@@ -1,0 +1,25 @@
+[
+    {
+        "name": "serverone",
+        "displayName": "Server One",
+        "username": "danny",
+        "hostname": "192.168.0.1",
+        "projects": [
+            {
+                "name": "projectone",
+                "root": "/var/www/projectone",
+                "scripts": {
+                    "clean": "/var/www/tickets/./deploy"
+                    "deploy": "/var/www/tickets/./clean"
+                }
+            }
+        ]
+    },
+    {
+        "name": "servertwo",
+        "displayName": "Server Two",
+        "username": "danny",
+        "hostname": "two.server.com",
+        "sshKey": "ssh/id_rsa"
+    }
+]

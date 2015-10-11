@@ -1,0 +1,47 @@
+{
+    "title": "servers",
+    "type": "array",
+    "items": {
+        "title": "Server",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "displayName": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "hostname": {
+                "type": "string"
+            },
+            "projects": {
+                "type": "array",
+                "items": {
+                    "title": "Project",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "root": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "root"
+                    ]
+                }
+            }
+        },
+        "required": [
+            "name",
+            "displayName",
+            "username",
+            "hostname"
+        ]
+    }
+}
