@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-if (file_exists(__DIR__.'/vendor/autoload.php')) {
-    require __DIR__.'/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
 } else {
-    require __DIR__.'/../../autoload.php';
+    require __DIR__ . '/../../autoload.php';
 }
 
 use Weeks\Mersey\Console;
@@ -12,12 +12,20 @@ use Weeks\Mersey\Exceptions\MerseyAppException;
 use Weeks\Mersey\Mersey as MerseyApp;
 use Weeks\Mersey\Services\JsonValidator;
 
+// check for global installation
+$globalSchema = '~/.composer/vendor/dannyweeks/mersey/schema.json';
+if (file_exists($globalSchema)) {
+    $schema = $globalSchema;
+} else {
+    $schema = 'schema.json';
+}
+
 $console = new Console('Mersey', '1.0');
-$app = new MerseyApp($console, new JsonValidator('schema.json'));
+$app = new MerseyApp($console, new JsonValidator($schema));
 
 try {
 
-    $app->loadServersFromJson('servers.json');
+    $app->loadServersFromJson('~/.mersey/servers.json');
     $app->run();
 
 } catch (MerseyAppException $e) {
