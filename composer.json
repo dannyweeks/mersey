@@ -1,5 +1,5 @@
 {
-    "name": "DannyWeeks/mersey",
+    "name": "dannyweeks/mersey",
     "description": "Establish ssh connections to quickly to any registered servers.",
     "keywords": ["ssh"],
     "type": "project",
