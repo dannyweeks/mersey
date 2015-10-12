@@ -15,6 +15,9 @@ class ServerCommand extends Command
      */
     protected $server;
 
+    /**
+     * Set standard config of command.
+     */
     protected function configure()
     {
         $this
@@ -36,6 +39,11 @@ class ServerCommand extends Command
             );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('projects')) {
@@ -126,6 +134,10 @@ class ServerCommand extends Command
         }
     }
 
+    /**
+     * @param $project
+     * @return string
+     */
     private function projectNotFoundError($project)
     {
         $format = "<error>There is no project named '%s' associated with the %s</error>";
@@ -133,6 +145,11 @@ class ServerCommand extends Command
         return sprintf($format, $project, $this->server->getDisplayName());
     }
 
+    /**
+     * @param $script
+     * @param $project
+     * @return string
+     */
     private function scriptNotFoundError($script, $project)
     {
         $format = "<error>There is no script named '%s' associated with the '%s' project on the %s</error>";

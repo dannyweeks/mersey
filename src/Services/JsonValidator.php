@@ -21,6 +21,10 @@ class JsonValidator
         $this->schema = $schema;
     }
 
+    /**
+     * @param $json
+     * @return bool
+     */
     public function validate($json)
     {
         // Get the schema and data as objects

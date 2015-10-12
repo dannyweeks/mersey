@@ -3,11 +3,7 @@
 namespace Weeks\Mersey;
 
 use Illuminate\Support\Collection;
-use JsonSchema\Uri\UriRetriever;
-use JsonSchema\Validator;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Weeks\Mersey\Commands\AvailableServersCommand;
 use Weeks\Mersey\Commands\HelpCommand;

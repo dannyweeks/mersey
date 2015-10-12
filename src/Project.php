@@ -31,13 +31,16 @@ class Project {
         $this->scripts = $scripts;
     }
 
+    /**
+     * @return string
+     */
     public function getRootCommand()
     {
         return sprintf("cd %s && bash", $this->root);
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -45,23 +48,38 @@ class Project {
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getRoot()
     {
         return $this->root;
     }
 
+    /**
+     * Array of scripts registered to this project.
+     *
+     * @return array
+     */
     public function availableScripts()
     {
         return array_keys($this->scripts);
     }
 
+    /**
+     * Get the command of a registered script.
+     *
+     * @param $name
+     * @return string
+     */
     public function getScript($name)
     {
         return $this->scripts[$name] . self::SCRIPT_COMMAND;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasScript($name)
     {
         return in_array($name, $this->availableScripts());

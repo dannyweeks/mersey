@@ -57,6 +57,8 @@ class Server
     }
 
     /**
+     * Connect to the server via SSH.
+     *
      * @param string $remoteCommand
      * @return bool|void
      */
@@ -71,17 +73,26 @@ class Server
         return $this->execute($command);
     }
 
+    /**
+     * @return int|bool
+     */
     public function ping()
     {
         return $this->pingService->ping();
     }
 
 
+    /**
+     * @return bool
+     */
     public function isAccessible()
     {
         return $this->ping() ? true : false;
     }
 
+    /**
+     * @return string
+     */
     protected function getConnectionCommand()
     {
         return sprintf("ssh -t -i %s %s@%s", $this->getSshKey(), $this->getUsername(), $this->getHostname());
@@ -100,7 +111,7 @@ class Server
 
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -108,7 +119,7 @@ class Server
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername()
     {
@@ -116,7 +127,7 @@ class Server
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getHostname()
     {
@@ -139,11 +150,18 @@ class Server
         return $this->projects;
     }
 
+    /**
+     * @param Project $project
+     */
     public function addProject(Project $project)
     {
         $this->projects[$project->getName()] = $project;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasProject($name)
     {
         return array_key_exists($name, $this->projects);
