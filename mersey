@@ -22,12 +22,23 @@ if (file_exists($globalSchema)) {
     $schema = 'schema.json';
 }
 
+// check for ~/.mersey servers before trying to use a local servers.json
+
+$globalServers = $homeDir . '/.mersey/servers.json';
+
+if (file_exists($globalServers)) {
+    $servers = $globalServers;
+} else {
+    $servers = 'servers.json';
+}
+
+
 $console = new Console('Mersey', '1.0');
 $app = new MerseyApp($console, new JsonValidator($schema));
 
 try {
 
-    $app->loadServersFromJson($homeDir . '/.mersey/servers.json');
+    $app->loadServersFromJson($servers);
     $app->run();
 
 } catch (MerseyAppException $e) {
