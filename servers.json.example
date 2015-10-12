@@ -9,7 +9,7 @@
                 "name": "projectone",
                 "root": "/var/www/projectone",
                 "scripts": {
-                    "clean": "/var/www/tickets/./deploy"
+                    "clean": "/var/www/tickets/./deploy",
                     "deploy": "/var/www/tickets/./clean"
                 }
             }
