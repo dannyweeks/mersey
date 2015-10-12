@@ -20,6 +20,10 @@ To connect to a server and navigate to a projects root directory use `mersey <se
 
 To connect to a server and run a script on a project use `mersey <servername> <projectname> <scriptname>`.
 
+Use `mersey <servername> --projects` to view a list of all available projects for a given server.
+
+Use `mersey ping` to ping all registered servers and test availability.
+
 ## Defining Servers
 There is a small amount of setting required to get up and running. Each server is an object in a json array. A server object
 needs a minimum of the following:
@@ -113,6 +117,6 @@ Below is a an example of a server called `personal` with one project called `pro
 ]
 ```
 
-## Todo
+## TODO
 
-[Checklist](http://phppackagechecklist.com/#1,2,3,4,5,6,8,9,13).
+[Checklist](http://phppackagechecklist.com/#1,2,3,4,5,6,8,9,12,13).
