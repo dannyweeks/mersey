@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dannyweeks/mersey.svg?branch=master)](https://travis-ci.org/dannyweeks/mersey)
+
 # Mersey
 A command line (CLI) tool written in PHP to simplify establishing/interacting an SSH connection to multiple servers quickly.
 
