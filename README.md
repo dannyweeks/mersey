@@ -11,21 +11,59 @@ A command line (CLI) tool written in PHP to simplify establishing/interacting an
 
 ## Installation
 
-1. First, install Mersey globally so you have access to it anywhere by running `composer global require dannyweeks/mersey:dev-master` *change to tag when one is available*
-2. Initialise Mersey by running `~/.composer/vendor/dannyweeks/mersey/init.sh`. This creates a hidden directory in your home to store your servers.
-3. Your servers are loaded via a json file which is located `~/.mersey/servers.json`. It comes populated with some example servers to help you on your way. Read the [Defining Servers](#defining-servers) section for more information.
+First, install Mersey globally so you have access to it anywhere by running *change to tag when one is available*
+
+```bash
+composer global require dannyweeks/mersey:dev-master
+```
+
+Initialise Mersey. This creates a hidden directory in your home to store your servers.
+
+```bash
+~/.composer/vendor/dannyweeks/mersey/init.sh
+```
+
+Your servers are loaded via a json file which is located `~/.mersey/servers.json`. It comes populated with some example servers to help you on your way. Read the [Defining Servers](#defining-servers) section for more information.
+
+## Assumptions/Default Settings
+
+Mersey assumes your SSH key is stored `~/.ssh/id_rsa`. However, this can be [set manually](#additional-server-settings) on a per server basis.
+
+Mersey uses port 22 to connect the server.
 
 ## Usage
 
-To connect to a server use `mersey <servername>`. 
+Below are the commands to interact with the `mersey` tool. 
 
-To connect to a server and navigate to a projects root directory use `mersey <servername> <projectname>`.
+### Connecting To A Server
 
-To connect to a server and run a script on a project use `mersey <servername> <projectname> <scriptname>`.
+```bash
+mersey <servername>
+```
 
-Use `mersey <servername> --projects` to view a list of all available projects for a given server.
+### Go To A Project
 
-Use `mersey ping` to ping all registered servers and test availability.
+```bash
+mersey <servername> <projectname>
+```
+
+### Run A Script
+
+```bash
+mersey <servername> <projectname> <scriptname>
+```
+
+### List Projects For A Given Server
+
+```bash
+mersey <servername> --project
+```
+
+### Test Availability Of The Registered Servers
+
+```bash
+mersey ping
+```
 
 ## Defining Servers
 There is a small amount of setting required to get up and running. Each server is an object in a json array. A server object
