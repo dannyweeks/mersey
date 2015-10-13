@@ -3,6 +3,7 @@
 namespace Weeks\Mersey;
 
 use \Mockery as m;
+use Weeks\Mersey\Services\Ping;
 
 class ServerTest extends \TestCase
 {
@@ -37,7 +38,7 @@ class ServerTest extends \TestCase
      */
     private function getServer(){
 
-        $pingMock = m::mock(\Weeks\Mersey\Services\Ping::class);
+        $pingMock = m::mock(Ping::class);
         $pingMock->shouldReceive('setHost')->andReturnSelf();
         $pingMock->shouldReceive('setPort')->andReturnSelf();
         $pingMock->shouldReceive('setTtl')->andReturnSelf();

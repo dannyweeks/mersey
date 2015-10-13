@@ -90,40 +90,12 @@ class Mersey
     public function run()
     {
         foreach ($this->loadedServers as $server) {
+
+            $serverInstance = $this->registerServer($server);
+
             $command = new ServerCommand($server->name);
             $command->setDescription(sprintf('Connect to %s.', $server->displayName));
-
-            $serverInstance = $this->serverFactory->create(
-                $server->name,
-                $server->username,
-                $server->hostname,
-                $server->displayName
-            );
-
-            if (!empty($server->sshKey)) {
-                $serverInstance->setSshKey($server->sshKey);
-            }
-
-            if (isset($server->projects) && is_array($projects = $server->projects)) {
-
-                foreach ($projects as $project) {
-                    $scripts = (array)$project->scripts;
-
-                    $scripts = !empty($scripts) ? $scripts : [];
-
-                    $projectInstance = $this->projectFactory->create(
-                        $project->name,
-                        $project->root,
-                        $scripts
-                    );
-
-                    $serverInstance->addProject($projectInstance);
-                }
-            }
-
             $command->setServer($serverInstance);
-            $this->servers->push($serverInstance);
-
             $this->console->add($command);
         }
 
@@ -183,5 +155,53 @@ class Mersey
                 throw new IllegalServerNameException(sprintf($format, $protected));
             }
         }
+    }
+
+    /**
+     * @param $server
+     * @return Server
+     */
+    private function registerServer($server)
+    {
+        $serverInstance = $this->serverFactory->create(
+            $server->name,
+            $server->username,
+            $server->hostname,
+            $server->displayName
+        );
+
+        if (!empty($server->sshKey)) {
+            $serverInstance->setSshKey($server->sshKey);
+        }
+
+        if ($this->serverHasProjects($server)) {
+
+            foreach ($server->projects as $project) {
+                $scripts = (array)$project->scripts;
+
+                $scripts = !empty($scripts) ? $scripts : [];
+
+                $projectInstance = $this->projectFactory->create(
+                    $project->name,
+                    $project->root,
+                    $scripts
+                );
+
+                $serverInstance->addProject($projectInstance);
+            }
+        }
+
+        $this->servers->push($serverInstance);
+
+        return $serverInstance;
+    }
+
+    /**
+     * @param $server
+     * @return bool
+     */
+    private function serverHasProjects($server)
+    {
+        return isset($server->projects) && is_array($server->projects);
     }
 }

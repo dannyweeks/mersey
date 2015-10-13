@@ -16,7 +16,8 @@
         }
     },
     "autoload-dev": {
-        "classmap": ["tests/TestCase.php"]
+        "classmap": ["tests/TestCase.php"],
+        "files": ["tests/helpers.php"]
     },
     "require": {
         "symfony/console": "^2.7",

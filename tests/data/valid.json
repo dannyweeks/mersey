@@ -1,0 +1,17 @@
+[
+    {
+        "name": "name",
+        "displayName": "Personal Server",
+        "username": "danny",
+        "hostname": "192.168.0.1",
+        "projects": [
+            {
+                "name": "project",
+                "root": "/var/www/project",
+                "scripts": {
+                    "clean": "/dev/null > /var/www/project/today.log"
+                }
+            }
+        ]
+    }
+]

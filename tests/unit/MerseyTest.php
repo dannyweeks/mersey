@@ -6,7 +6,6 @@ use \Mockery as m;
 use Symfony\Component\Console\Application;
 use Weeks\Mersey\Factories\ProjectFactory;
 use Weeks\Mersey\Factories\ServerFactory;
-use Weeks\Mersey\Server;
 use Weeks\Mersey\Services\JsonValidator;
 
 class MerseyTest extends \TestCase
@@ -21,10 +20,6 @@ class MerseyTest extends \TestCase
         $consoleMock = m::mock(Application::class);
         $validatorMock = m::mock(JsonValidator::class);
 
-        $serverJson = $this->getValidServerJson();
-
-        $servers = $this->createTempFile($serverJson);
-
         $validatorMock->shouldReceive('validate')->andReturn(true);
 
         $serverFactoryMock = m::mock(ServerFactory::class);
@@ -34,13 +29,12 @@ class MerseyTest extends \TestCase
 
         // when
 
-        $mersey->loadServersFromJson($servers);
+        $mersey->loadServersFromJson(testData('valid.json'));
 
         // then
 
-        $this->assertEquals(json_decode($serverJson), $this->readAttribute($mersey, 'loadedServers'));
+        $this->assertEquals(json_decode(file_get_contents(testData('valid.json'))), $this->readAttribute($mersey, 'loadedServers'));
 
-        unlink($servers);
     }
 
     /**
@@ -52,17 +46,6 @@ class MerseyTest extends \TestCase
         // given
         $consoleMock = m::mock(Application::class);
         $validatorMock = m::mock(JsonValidator::class);
-
-        $invalidJson = '
-        [
-            {
-                "displayName": "Personal Server",
-                "username": "danny",
-                "hostname": "192.168.0.1"
-            }
-        ]';
-
-        $invalid = $this->createTempFile($invalidJson);
 
         $validatorMock->shouldReceive('validate')->andReturn(false);
         $validatorMock->shouldReceive('getErrors')->andReturn([
@@ -78,9 +61,8 @@ class MerseyTest extends \TestCase
         $mersey = $this->getMersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
 
         // when
-        $mersey->loadServersFromJson($invalid);
+        $mersey->loadServersFromJson(testData('invalid.json'));
 
-        unlink($invalid);
 
     }
 
@@ -94,18 +76,6 @@ class MerseyTest extends \TestCase
         $consoleMock = m::mock(Application::class);
         $validatorMock = m::mock(JsonValidator::class);
 
-        $invalidJson = '
-        [
-            {
-                "name": "help",
-                "displayName": "Personal Server",
-                "username": "danny",
-                "hostname": "192.168.0.1"
-            }
-        ]';
-
-        $invalid = $this->createTempFile($invalidJson);
-
         $validatorMock->shouldReceive('validate')->andReturn(true);
 
         $serverFactoryMock = m::mock(ServerFactory::class);
@@ -114,9 +84,8 @@ class MerseyTest extends \TestCase
         $mersey = $this->getMersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
 
         // when
-        $mersey->loadServersFromJson($invalid);
+        $mersey->loadServersFromJson(testData('illegalName.json'));
 
-        unlink($invalid);
     }
 
     /**
@@ -144,10 +113,10 @@ class MerseyTest extends \TestCase
             ->atLeast('once');
 
 
-        $consoleMock->shouldReceive('run');
+        $consoleMock->shouldReceive('run')->once();
 
         $mersey = $this->getMersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
-        $mersey->loadServersFromJson($this->createTempFile($this->getValidServerJson()));
+        $mersey->loadServersFromJson(testData('valid.json'));
         $mersey->run();
 
 
@@ -165,41 +134,6 @@ class MerseyTest extends \TestCase
         $consoleMock->shouldReceive('add')->atLeast()->once();
 
         return new Mersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
-    }
-
-    /**
-     * @param $data
-     * @return string
-     */
-    private function createTempFile($data)
-    {
-        $filePath = tempnam(sys_get_temp_dir(), 'FOOBAR');
-        $handle = fopen($filePath, "w");
-        fwrite($handle, $data);
-        fclose($handle);
-
-        return $filePath;
-    }
-
-    private function getValidServerJson(){
-        return '
-        [
-            {
-                "name": "name",
-                "displayName": "Personal Server",
-                "username": "danny",
-                "hostname": "192.168.0.1",
-                "projects": [
-                    {
-                        "name": "project",
-                        "root": "/var/www/project",
-                        "scripts": {
-                            "clean": "/dev/null > /var/www/project/today.log"
-                        }
-                    }
-                ]
-            }
-        ]';
     }
 
 }
