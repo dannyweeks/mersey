@@ -177,9 +177,8 @@ class Mersey
         if ($this->serverHasProjects($server)) {
 
             foreach ($server->projects as $project) {
-                $scripts = (array)$project->scripts;
 
-                $scripts = !empty($scripts) ? $scripts : [];
+                $scripts = isset($project->scripts) ? (array) $project->scripts : [];
 
                 $projectInstance = $this->projectFactory->create(
                     $project->name,
