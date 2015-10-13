@@ -95,7 +95,7 @@ class Server
      */
     protected function getConnectionCommand()
     {
-        return sprintf("ssh -t -i %s %s@%s", $this->getSshKey(), $this->getUsername(), $this->getHostname());
+        return sprintf("ssh -t -p %d -i %s %s@%s",$this->getSshPort(), $this->getSshKey(), $this->getUsername(), $this->getHostname());
     }
 
     /**
@@ -191,6 +191,25 @@ class Server
     public function setSshKey($sshKey)
     {
         $this->sshKey = $sshKey;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSshPort()
+    {
+        return $this->sshPort;
+    }
+
+    /**
+     * @param int $sshPort
+     * @return $this
+     */
+    public function setSshPort($sshPort)
+    {
+        $this->sshPort = $sshPort;
 
         return $this;
     }

@@ -17,6 +17,9 @@
             "hostname": {
                 "type": "string"
             },
+            "port": {
+                "type": "integer"
+            },
             "projects": {
                 "type": "array",
                 "items": {

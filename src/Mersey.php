@@ -174,6 +174,10 @@ class Mersey
             $serverInstance->setSshKey($server->sshKey);
         }
 
+        if (!empty($server->port)) {
+            $serverInstance->setSshPort($server->port);
+        }
+
         if ($this->serverHasProjects($server)) {
 
             foreach ($server->projects as $project) {

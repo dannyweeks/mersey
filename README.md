@@ -27,9 +27,11 @@ Your servers are loaded via a json file which is located `~/.mersey/servers.json
 
 ## Assumptions/Default Settings
 
-Mersey assumes your SSH key is stored `~/.ssh/id_rsa`. However, this can be [set manually](#additional-server-settings) on a per server basis.
+Mersey assumes your SSH key is stored `~/.ssh/id_rsa`.
 
 Mersey uses port 22 to connect the server.
+
+However, this can be [set manually](#additional-server-settings) on a per server basis.
 
 ## Usage
 
@@ -91,6 +93,7 @@ needs a minimum of the following:
 There are optional setting for servers which help facilitate your needs. 
 
 * **sshKey** : Use this private key to connect rather than the default.
+* **port** : Use this port to make connections instead of the default for this server.
 * **projects** : An array of project objects. [Read more in the projects section](#projects)
 
 *servers.json*
@@ -98,7 +101,8 @@ There are optional setting for servers which help facilitate your needs.
 [
     {
         ...
-        "sshKey": "/path/to/another/id_rsa"
+        "sshKey": "/path/to/another/id_rsa",
+        "port": 2222,
         ...
     }
 ]
@@ -126,7 +130,7 @@ similar to the names of servers and projects.
                     "clean": "/dev/null > /var/www/project/today.log"
                 }
             }
-        ]
+        ],
         ...
     }
 ]
@@ -145,6 +149,7 @@ Below is a an example of a server called `personal` with one project called `pro
         "username": "danny",
         "hostname": "192.168.0.1",
         "sshKey": "/path/to/another/id_rsa",
+        "port": 2222,
         "projects": [
             {
                 "name": "project",
