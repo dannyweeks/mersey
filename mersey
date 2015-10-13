@@ -9,6 +9,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 use Weeks\Mersey\Console;
 use Weeks\Mersey\Exceptions\MerseyAppException;
+use Weeks\Mersey\Factories\ProjectFactory;
+use Weeks\Mersey\Factories\ServerFactory;
 use Weeks\Mersey\Mersey as MerseyApp;
 use Weeks\Mersey\Services\JsonValidator;
 
@@ -33,8 +35,12 @@ if (file_exists($globalServers)) {
 }
 
 
-$console = new Console('Mersey', '1.0');
-$app = new MerseyApp($console, new JsonValidator($schema));
+$app = new MerseyApp(
+    new Console('Mersey', '1.0'),
+    new JsonValidator($schema),
+    new ServerFactory(),
+    new ProjectFactory()
+);
 
 try {
 

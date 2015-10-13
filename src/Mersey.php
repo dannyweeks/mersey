@@ -11,8 +11,9 @@ use Weeks\Mersey\Commands\ServerCommand;
 use Weeks\Mersey\Exceptions\IllegalScriptNameException;
 use Weeks\Mersey\Exceptions\IllegalServerNameException;
 use Weeks\Mersey\Exceptions\InvalidServerConfigException;
+use Weeks\Mersey\Factories\ProjectFactory;
+use Weeks\Mersey\Factories\ServerFactory;
 use Weeks\Mersey\Services\JsonValidator;
-use Weeks\Mersey\Services\Ping;
 
 class Mersey
 {
@@ -44,13 +45,24 @@ class Mersey
      * @var JsonValidator
      */
     private $jsonValidator;
+    /**
+     * @var ServerFactory
+     */
+    private $serverFactory;
+    /**
+     * @var ProjectFactory
+     */
+    private $projectFactory;
 
-    public function __construct(Application $console, JsonValidator $jsonValidator)
+    public function __construct(Application $console, JsonValidator $jsonValidator, ServerFactory $serverFactory, ProjectFactory $projectFactory)
     {
         $this->console = $console;
+        $this->jsonValidator = $jsonValidator;
+
         $this->console->add(new AvailableServersCommand('ping', $this));
         $this->servers = new Collection();
-        $this->jsonValidator = $jsonValidator;
+        $this->serverFactory = $serverFactory;
+        $this->projectFactory = $projectFactory;
     }
 
     /**
@@ -81,8 +93,7 @@ class Mersey
             $command = new ServerCommand($server->name);
             $command->setDescription(sprintf('Connect to %s.', $server->displayName));
 
-            $serverInstance = new Server(
-                new Ping($server->hostname),
+            $serverInstance = $this->serverFactory->create(
                 $server->name,
                 $server->username,
                 $server->hostname,
@@ -100,7 +111,7 @@ class Mersey
 
                     $scripts = !empty($scripts) ? $scripts : [];
 
-                    $projectInstance = new Project(
+                    $projectInstance = $this->projectFactory->create(
                         $project->name,
                         $project->root,
                         $scripts

@@ -27,7 +27,8 @@
     "require-dev": {
         "symfony/var-dumper": "^2.7",
         "phpunit/phpunit": "^5.0",
-        "mockery/mockery": "^0.9.4"
+        "mockery/mockery": "^0.9.4",
+        "phpunit/php-code-coverage": "dev-master#b8436b000263f6d72fbad1d36890e247ce84857e"
     },
     "bin": [
         "mersey"
