@@ -1,6 +1,7 @@
 # Mersey
 
 [![Build Status](https://travis-ci.org/dannyweeks/mersey.svg?branch=master)](https://travis-ci.org/dannyweeks/mersey)
+[![Codacy Badge](https://api.codacy.com/project/badge/e1f70770b00848e6b0621e3ac011b930)](https://www.codacy.com/app/danny_4/mersey)
 
 A command line (CLI) tool written in PHP to simplify establishing/interacting an SSH connection to multiple servers quickly.
 
@@ -11,10 +12,10 @@ A command line (CLI) tool written in PHP to simplify establishing/interacting an
 
 ## Installation
 
-First, install Mersey globally so you have access to it anywhere by running *change to tag when one is available*
+First, install Mersey globally so you have access to it anywhere by running
 
 ```bash
-composer global require dannyweeks/mersey:dev-master
+composer global require dannyweeks/mersey
 ```
 
 Initialise Mersey. This creates a hidden directory in your home to store your servers.
