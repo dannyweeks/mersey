@@ -129,9 +129,10 @@ class ServerCommand extends Command
 
             $output->writeln('example use: php mersey ' . $this->server->getName() . ' <projectname>');
 
-        } else {
-            $output->writeln('No projects for this server.');
+            return;
         }
+
+        $output->writeln('No projects for this server.');
     }
 
     /**

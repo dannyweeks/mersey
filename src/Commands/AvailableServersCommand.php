@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Weeks\Mersey\Mersey;
+use Weeks\Mersey\Server;
 
 
 class AvailableServersCommand extends Command
@@ -27,6 +28,9 @@ class AvailableServersCommand extends Command
         $this->app = $app;
     }
 
+    /**
+     * Set up the command
+     */
     protected function configure()
     {
         $this
@@ -34,10 +38,15 @@ class AvailableServersCommand extends Command
             ->setDescription('Display availability of all registered servers. ');
     }
 
+    /**
+     * Run the ping test.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
         $table = new Table($output);
         $table->setHeaders(array('Server', 'Ping'));
         $servers = $this->app->getServers();
@@ -46,23 +55,8 @@ class AvailableServersCommand extends Command
         $output->writeln('Checking server availability');
         $progress->start();
 
-        foreach($servers as $server)
-        {
-            $messageFormat = "<comment>%s</comment>";
-            if($ping = $server->ping())
-            {
-                $table->addRow([
-                    sprintf($messageFormat, $server->getDisplayName()),
-                    $ping
-                ]);
-            }
-            else {
-                $table->addRow([
-                    sprintf($messageFormat, $server->getDisplayName()),
-                    '<error>Unavailable </error>'
-                ]);
-            }
-
+        foreach ($servers as $server) {
+            $table->addRow($this->getPingRowData($server));
             $progress->advance();
         }
 
@@ -71,6 +65,29 @@ class AvailableServersCommand extends Command
         $output->writeln('');
 
         $table->render();
+    }
+
+    /**
+     * Create row data for the table depending on the ping result.
+     *
+     * @param Server $server
+     * @return array
+     */
+    private function getPingRowData(Server $server)
+    {
+        $data = [
+            sprintf("<comment>%s</comment>", $server->getDisplayName())
+        ];
+
+        if ($ping = $server->ping()) {
+            $data[] = $ping;
+
+            return $data;
+        }
+
+        $data[] = '<error>Unavailable</error>';
+
+        return $data;
     }
 }
 
