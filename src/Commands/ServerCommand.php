@@ -71,7 +71,6 @@ class ServerCommand extends Command
         $project = $this->server->getProject($requestedProjectName);
         $requestType = $this->getRequestType($arguments);
 
-
         switch ($requestType) {
 
             case 'server':
@@ -79,6 +78,13 @@ class ServerCommand extends Command
                 break;
 
             case 'project':
+
+                $message = '<info>Connecting to the %s and going to the project root of \'%s\'</info>';
+                $output->writeln(sprintf(
+                    $message,
+                    $this->server->getDisplayName(),
+                    ucwords($project->getName())
+                ));
 
                 $this->server->connect($project->getRootCommand());
 
