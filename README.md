@@ -68,6 +68,12 @@ mersey <servername> --project
 mersey ping
 ```
 
+### Edit The Server Config File
+
+```bash
+mersey edit
+```
+
 ## Defining Servers
 There is a small amount of setting required to get up and running. Each server is an object in a json array. A server object
 needs a minimum of the following:
