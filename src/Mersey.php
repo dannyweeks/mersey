@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Weeks\Mersey\Commands\AvailableServersCommand;
+use Weeks\Mersey\Commands\EditServersCommand;
 use Weeks\Mersey\Commands\HelpCommand;
 use Weeks\Mersey\Commands\ServerCommand;
 use Weeks\Mersey\Exceptions\IllegalScriptNameException;
@@ -60,6 +61,7 @@ class Mersey
         $this->jsonValidator = $jsonValidator;
 
         $this->console->add(new AvailableServersCommand('ping', $this));
+        $this->console->add(new EditServersCommand());
         $this->servers = new Collection();
         $this->serverFactory = $serverFactory;
         $this->projectFactory = $projectFactory;
