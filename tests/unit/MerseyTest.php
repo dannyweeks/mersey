@@ -121,19 +121,4 @@ class MerseyTest extends \TestCase
 
 
     }
-
-    /**
-     * @param $consoleMock
-     * @param $validatorMock
-     * @param $serverFactoryMock
-     * @param $projectFactoryMock
-     * @return Mersey
-     */
-    private function getMersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock)
-    {
-        $consoleMock->shouldReceive('add')->atLeast()->once();
-
-        return new Mersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
-    }
-
 }

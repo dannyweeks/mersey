@@ -51,7 +51,7 @@ class AvailableServersCommand extends Command
         $table->setHeaders(array('Server', 'Ping'));
         $servers = $this->app->getServers();
 
-        $progress = new ProgressBar($output, $servers->count());
+        $progress = new ProgressBar($output, count($servers));
         $output->writeln('Checking server availability');
         $progress->start();
 
@@ -73,7 +73,7 @@ class AvailableServersCommand extends Command
      * @param Server $server
      * @return array
      */
-    private function getPingRowData(Server $server)
+    private function getPingRowData($server)
     {
         $data = [
             sprintf("<comment>%s</comment>", $server->getDisplayName())

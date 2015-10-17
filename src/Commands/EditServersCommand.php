@@ -35,6 +35,7 @@ class EditServersCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('<info>Editing servers.json</info>');
         passthru('open ' . getenv('MERSEY_SERVER_CONFIG'));
     }
 }
