@@ -61,15 +61,3 @@ class ServerTest extends \TestCase
         );
     }
 }
-
-
-/**
- * Overwrite the php passthru function
- *
- * @param $command
- * @return mixed
- */
-function passthru($command)
-{
-    return $command;
-}

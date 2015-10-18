@@ -4,9 +4,11 @@ namespace Weeks\Mersey;
 
 
 use Weeks\Mersey\Services\Ping;
+use Weeks\Mersey\Traits\PassThruTrait;
 
 class Server
 {
+    use PassThruTrait;
     /**
      * @var Ping
      */
@@ -70,7 +72,7 @@ class Server
             $command .= " '{$remoteCommand}'";
         }
 
-        return $this->execute($command);
+        return $this->passthru($command);
     }
 
     /**

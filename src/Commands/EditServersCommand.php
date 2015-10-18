@@ -12,10 +12,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Weeks\Mersey\Mersey;
 use Weeks\Mersey\Server;
+use Weeks\Mersey\Traits\PassThruTrait;
 
 
 class EditServersCommand extends Command
 {
+    use PassThruTrait;
     /**
      * Set up the command
      */
@@ -36,7 +38,7 @@ class EditServersCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<info>Editing servers.json</info>');
-        passthru('open ' . getenv('MERSEY_SERVER_CONFIG'));
+        $this->passthru('open ' . getenv('MERSEY_SERVER_CONFIG'));
     }
 }
 

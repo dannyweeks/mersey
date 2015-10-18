@@ -5,9 +5,6 @@ namespace Weeks\Mersey\Commands;
 use \Mockery as m;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Weeks\Mersey\Factories\ProjectFactory;
-use Weeks\Mersey\Factories\ServerFactory;
-use Weeks\Mersey\Services\JsonValidator;
 
 class EditServerCommandTest extends \TestCase
 {
@@ -24,15 +21,4 @@ class EditServerCommandTest extends \TestCase
         $commandTester->execute(array('command' => $command->getName()));
         $this->assertRegExp('/Editing servers\.json/', $commandTester->getDisplay());
     }
-}
-
-/**
- * Overwrite the php passthru function
- *
- * @param $command
- * @return mixed
- */
-function passthru($command)
-{
-    return $command;
 }
