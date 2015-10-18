@@ -174,7 +174,3 @@ Below is a an example of a server called `personal` with one project called `pro
 
 All [pull requests](https://github.com/dannyweeks/mersey/pulls) and bug fixes are welcomed.
 Please check the [CONTRIBUTING](https://github.com/dannyweeks/mersey/blob/master/CONTRIBUTING.md) file for more information.
-
-## TODO
-
-[Checklist](http://phppackagechecklist.com/#1,2,3,4,5,6,7,8,9,11,12,13,14).
