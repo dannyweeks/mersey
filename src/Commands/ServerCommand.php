@@ -74,6 +74,7 @@ class ServerCommand extends Command
         switch ($requestType) {
 
             case 'server':
+                $output->writeln(sprintf('<info>Connecting to \'%s\'...</info>', $this->server->getDisplayName()));
                 $this->server->connect();
                 break;
 
@@ -92,6 +93,7 @@ class ServerCommand extends Command
 
             case 'script':
 
+
                 $availableScripts = $project->availableScripts();
 
                 $scriptRequested = $arguments['script'];
@@ -102,6 +104,7 @@ class ServerCommand extends Command
                     return;
                 }
 
+                $output->writeln(sprintf('<info>Executing remote script \'%s\'...</info>', $scriptRequested));
                 $this->server->connect($project->getScript($scriptRequested));
 
                 break;
