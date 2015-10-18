@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [1.1.1] - 2015-10-18
+### Fixed
+- Display the correct version number in console.
+
 ## [1.1.0] - 2015-10-18
 ### Added
 - New `edit` command. A shortcut to edit the servers.json file.

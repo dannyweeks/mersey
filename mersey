@@ -37,7 +37,7 @@ if (file_exists($globalServers)) {
 putenv('MERSEY_SERVER_CONFIG=' . $servers);
 
 $app = new MerseyApp(
-    new Console('Mersey', '1.0'),
+    new Console('Mersey', '1.1.1'),
     new JsonValidator($schema),
     new ServerFactory(),
     new ProjectFactory()
