@@ -5,10 +5,15 @@
 
 A command line (CLI) tool written in PHP to simplify establishing/interacting an SSH connection to multiple servers quickly.
 
+Some cool things you can do:
+- [Connect to servers.](#connecting-to-a-server)
+- [Connect to a server and got to a projects directory.](#go-to-a-project)
+- [Connect to a server and run a script of your choice.](#run-a-script)
+
 ## Prerequisites
 
-- OS X is the only supported OS at the moment. More in the future!
-- [Composer](https://getcomposer.org/) is the recommended installation method.
+- OS X is the only supported operating system at the moment (Linux should be fine though!). More in the future!
+- [Composer](https://getcomposer.org/).
 
 ## Installation
 
@@ -25,6 +30,12 @@ Initialise Mersey. This creates a hidden directory in your home to store your se
 ```
 
 Your servers are loaded via a json file which is located `~/.mersey/servers.json`. It comes populated with some example servers to help you on your way. Read the [Defining Servers](#defining-servers) section for more information.
+
+If it isn't already, add composers bin directory to your PATH by adding the below to your ~/.bash_profile (or ~/.bashrc).
+
+```bash
+export PATH=~/.composer/vendor/bin:$PATH
+```
 
 ## Assumptions/Default Settings
 
