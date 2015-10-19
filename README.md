@@ -17,7 +17,13 @@ Some cool things you can do:
 
 ## Installation
 
-First, install Mersey globally so you have access to it anywhere by running
+If it isn't already, add composers bin directory to your PATH by adding the below to your ~/.bash_profile (or ~/.bashrc).
+
+```bash
+export PATH=~/.composer/vendor/bin:$PATH
+```
+
+Now, install Mersey globally so you have access to it anywhere by running
 
 ```bash
 composer global require dannyweeks/mersey
@@ -30,12 +36,6 @@ Initialise Mersey. This creates a hidden directory in your home to store your se
 ```
 
 Your servers are loaded via a json file which is located `~/.mersey/servers.json`. It comes populated with some example servers to help you on your way. Read the [Defining Servers](#defining-servers) section for more information.
-
-If it isn't already, add composers bin directory to your PATH by adding the below to your ~/.bash_profile (or ~/.bashrc).
-
-```bash
-export PATH=~/.composer/vendor/bin:$PATH
-```
 
 ## Assumptions/Default Settings
 
