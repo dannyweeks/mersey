@@ -43,7 +43,7 @@ Mersey assumes your SSH key is stored `~/.ssh/id_rsa`.
 
 Mersey uses port 22 to connect the server.
 
-However, this can be [set manually](#additional-server-settings) on a per server basis.
+However, these can be [set manually](#additional-server-settings) on a per server basis.
 
 ## Usage
 
@@ -173,7 +173,7 @@ Below is a an example of a server called `personal` with one project called `pro
                 "name": "project",
                 "root": "/var/www/project",
                 "scripts": {
-                    "clean": "/dev/null > /var/www/project/today.log"
+                    "clean": "cat /dev/null > /var/www/project/today.log"
                 }
             }
         ]
