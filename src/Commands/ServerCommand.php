@@ -55,7 +55,7 @@ class ServerCommand extends Command
         if (!$this->server->isAccessible()) {
             $output->writeln(sprintf("<error>%s is unreachable.</error>", $this->server->getDisplayName()));
 
-            return;
+            return 1;
         }
 
         $arguments = $input->getArguments();
@@ -65,7 +65,7 @@ class ServerCommand extends Command
 
             $output->writeln($this->projectNotFoundError($requestedProjectName));
 
-            return;
+            return 1;
         }
 
         $project = $this->server->getProject($requestedProjectName);
@@ -101,7 +101,7 @@ class ServerCommand extends Command
                 if ($this->checkRequestedScriptExists($scriptRequested, $availableScripts)) {
                     $output->writeln($this->scriptNotFoundError($scriptRequested, $requestedProjectName));
 
-                    return;
+                    return 1;
                 }
 
                 $output->writeln(sprintf('<info>Executing remote script \'%s\'...</info>', $scriptRequested));
