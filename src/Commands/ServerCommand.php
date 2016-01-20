@@ -7,13 +7,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Weeks\Mersey\Server;
+use Weeks\Mersey\Traits\PassThruTrait;
 
 class ServerCommand extends Command
 {
+
+    use PassThruTrait;
+
     /**
      * @var \Weeks\Mersey\Server
      */
     protected $server;
+    protected $output;
 
     /**
      * Set standard config of command.
@@ -33,9 +38,15 @@ class ServerCommand extends Command
             )
             ->addOption(
                 'projects',
-                null,
+                'p',
                 InputOption::VALUE_NONE,
                 'List available projects.'
+            )
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Skip ping test.'
             );
     }
 
@@ -46,13 +57,15 @@ class ServerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
+
         if ($input->getOption('projects')) {
             $this->showProjects($output);
 
             return;
         }
 
-        if (!$this->server->isAccessible()) {
+        if (!$this->server->isAccessible() && !$input->getOption('force')) {
             $output->writeln(sprintf("<error>%s is unreachable.</error>", $this->server->getDisplayName()));
 
             return 1;
@@ -75,7 +88,7 @@ class ServerCommand extends Command
 
             case 'server':
                 $output->writeln(sprintf('<info>Connecting to \'%s\'...</info>', $this->server->getDisplayName()));
-                $this->server->connect();
+                $this->passthru($this->server->getCommand());
                 break;
 
             case 'project':
@@ -87,7 +100,9 @@ class ServerCommand extends Command
                     ucwords($project->getName())
                 ));
 
-                $this->server->connect($project->getRootCommand());
+                $command = $this->server->getCommand($project->getRootCommand());
+
+                $this->passthru($command);
 
                 break;
 
@@ -105,7 +120,9 @@ class ServerCommand extends Command
                 }
 
                 $output->writeln(sprintf('<info>Executing remote script \'%s\'...</info>', $scriptRequested));
-                $this->server->connect($project->getScript($scriptRequested));
+                $command = $this->server->getCommand($project->getScript($scriptRequested));
+
+                $this->passthru($command, $output);
 
                 break;
         }

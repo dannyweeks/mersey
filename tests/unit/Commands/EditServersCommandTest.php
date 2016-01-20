@@ -4,6 +4,7 @@ namespace Weeks\Mersey\Commands;
 
 use \Mockery as m;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class EditServerCommandTest extends \TestCase
@@ -18,7 +19,11 @@ class EditServerCommandTest extends \TestCase
 
         $command = $application->find('edit');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute([
+            'command' => $command->getName(),
+        ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
+
         $this->assertRegExp('/Editing servers\.json/', $commandTester->getDisplay());
+        $this->assertRegExp('/open servers\.json/', $commandTester->getDisplay());
     }
 }

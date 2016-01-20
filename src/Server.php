@@ -33,7 +33,6 @@ class Server
      */
     private $sshPort = 22;
 
-
     /**
      * @param Services\Ping $pingService
      * @param $name
@@ -59,12 +58,12 @@ class Server
     }
 
     /**
-     * Connect to the server via SSH.
+     * Get the full SSH command tailored to this servers config.
      *
      * @param string $remoteCommand
      * @return bool|void
      */
-    public function connect($remoteCommand = '')
+    public function getCommand($remoteCommand = '')
     {
         $command = $this->getConnectionCommand();
 
@@ -72,7 +71,7 @@ class Server
             $command .= " '{$remoteCommand}'";
         }
 
-        return $this->passthru($command);
+        return $command;
     }
 
     /**

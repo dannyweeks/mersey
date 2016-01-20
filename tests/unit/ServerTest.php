@@ -12,7 +12,7 @@ class ServerTest extends \TestCase
      */
     public function it_creates_a_full_connection_command()
     {
-        $this->assertEquals('ssh -t -p 22 -i ~/.ssh/id_rsa danny@192.168.0.1', $this->getServer()->connect());
+        $this->assertEquals('ssh -t -p 22 -i ~/.ssh/id_rsa danny@192.168.0.1', $this->getServer()->getCommand());
     }
 
     /**
@@ -20,7 +20,7 @@ class ServerTest extends \TestCase
     */
     public function it_sets_an_ssh_key()
     {
-        $this->assertContains('ssh/private', $this->getServer()->setSshKey('ssh/private')->connect());
+        $this->assertContains('ssh/private', $this->getServer()->setSshKey('ssh/private')->getCommand());
     }
 
     /**
@@ -28,7 +28,7 @@ class ServerTest extends \TestCase
     */
     public function it_sets_an_ssh_port()
     {
-        $this->assertContains('-p 123', $this->getServer()->setSshPort(123)->connect());
+        $this->assertContains('-p 123', $this->getServer()->setSshPort(123)->getCommand());
     }
 
     /**

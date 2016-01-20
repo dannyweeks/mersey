@@ -18,6 +18,8 @@ use Weeks\Mersey\Traits\PassThruTrait;
 class EditServersCommand extends Command
 {
     use PassThruTrait;
+    protected $output;
+
     /**
      * Set up the command
      */
@@ -37,8 +39,12 @@ class EditServersCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
         $output->writeln('<info>Editing servers.json</info>');
-        $this->passthru('open ' . getenv('MERSEY_SERVER_CONFIG'));
+
+        $command = 'open ' . env('MERSEY_SERVER_CONFIG');
+
+        $this->passthru($command);
     }
 }
 

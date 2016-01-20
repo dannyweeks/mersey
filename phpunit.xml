@@ -1,13 +1,23 @@
 <phpunit
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         bootstrap="vendor/autoload.php">
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        bootstrap="vendor/autoload.php">
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="MERSEY_SERVER_CONFIG" value="servers.json"/>
+    </php>
 
-         <testsuites>
-            <testsuite name="default">
-               <directory>tests</directory>
-            </testsuite>
-         </testsuites>
+    <testsuites>
+        <testsuite name="default">
+            <directory>tests</directory>
+        </testsuite>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="features">
+            <directory>tests/features</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>

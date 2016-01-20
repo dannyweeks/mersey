@@ -1,15 +1,15 @@
 [
     {
-        "name": "name",
-        "displayName": "Personal Server",
+        "name": "servername",
+        "displayName": "Test Server",
         "username": "danny",
-        "hostname": "192.168.0.1",
+        "hostname": "localhost",
         "projects": [
             {
-                "name": "project",
-                "root": "/var/www/project",
+                "name": "projectname",
+                "root": "/var/www/projectname",
                 "scripts": {
-                    "clean": "/dev/null > /var/www/project/today.log"
+                    "clean": "cat /dev/null > /var/www/projectname/today.log"
                 }
             }
         ]

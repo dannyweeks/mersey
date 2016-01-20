@@ -4,6 +4,7 @@ namespace Weeks\Mersey\Commands;
 
 use \Mockery as m;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 use Weeks\Mersey\Factories\ProjectFactory;
 use Weeks\Mersey\Factories\ServerFactory;
@@ -28,18 +29,18 @@ class ServerCommandTest extends \TestCase
         $server->shouldReceive('isAccessible')->andReturn(true);
         $server->shouldReceive('getDisplayName')->andReturn('Test Server');
         $server->shouldReceive('getProject')->andReturn([]);
-        $server->shouldReceive('connect');
+        $expectedCommand = 'server connect command';
+        $server->shouldReceive('getCommand')->andReturn($expectedCommand);
         $command->setServer($server);
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command'    => $command->getName(),
-        ]);
+        ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
 
         $output = $commandTester->getDisplay();
 
-        $this->assertContains('Connecting to', $output);
-        $this->assertContains('Test Server', $output);
+        $this->assertCommandExecuted($expectedCommand, $output);
     }
 
     /**
@@ -115,13 +116,15 @@ class ServerCommandTest extends \TestCase
 
         $server = m::mock(Server::class);
         $project = m::mock(Project::class);
+        $server->shouldReceive('setDebug')->andReturnSelf();
         $server->shouldReceive('isAccessible')->andReturn(true);
         $server->shouldReceive('getDisplayName')->andReturn('Test Server');
         $server->shouldReceive('hasProject')->andReturn(true);
         $server->shouldReceive('getProject')->andReturn($project);
         $project->shouldReceive('getName')->andReturn('testproject');
-        $project->shouldReceive('getRootCommand');
-        $server->shouldReceive('connect');
+        $project->shouldReceive('getRootCommand')->andReturn('root command');
+        $expectedCommand = 'project connect command';
+        $server->shouldReceive('getCommand')->andReturn($expectedCommand);
 
         $command->setServer($server);
 
@@ -129,11 +132,11 @@ class ServerCommandTest extends \TestCase
         $commandTester->execute([
             'command' => $command->getName(),
             'project' => 'testproject'
-        ]);
+        ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
 
         $output = $commandTester->getDisplay();
 
-        $this->assertRegExp('/project root of \'testproject\'/i', $output);
+        $this->assertCommandExecuted($expectedCommand, $output);
     }
     /**
      * @test
@@ -175,13 +178,15 @@ class ServerCommandTest extends \TestCase
 
         $server = m::mock(Server::class);
         $project = m::mock(Project::class);
+        $server->shouldReceive('setDebug')->andReturnSelf();
         $server->shouldReceive('isAccessible')->andReturn(true);
         $server->shouldReceive('getDisplayName')->andReturn('Test Server');
         $server->shouldReceive('hasProject')->andReturn(true);
         $server->shouldReceive('getProject')->andReturn($project);
         $project->shouldReceive('availableScripts')->andReturn(['testscript']);
         $project->shouldReceive('getScript')->andReturn('cd /a/script/');
-        $server->shouldReceive('connect');
+        $expectedCommand = 'remote script ran';
+        $server->shouldReceive('getCommand')->andReturn($expectedCommand);
 
         $command->setServer($server);
 
@@ -190,11 +195,11 @@ class ServerCommandTest extends \TestCase
             'command' => $command->getName(),
             'project' => 'testproject',
             'script' => 'testscript'
-        ]);
+        ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
 
         $output = $commandTester->getDisplay();
 
-        $this->assertRegExp('/Executing remote script \'testscript\'/i', $output);
+        $this->assertCommandExecuted($expectedCommand, $output);
     }
 
 
