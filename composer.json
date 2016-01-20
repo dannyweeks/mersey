@@ -1,7 +1,10 @@
 {
     "name": "dannyweeks/mersey",
     "description": "Establish ssh connections to quickly to any registered servers.",
-    "keywords": ["ssh", "cli"],
+    "keywords": [
+        "ssh",
+        "cli"
+    ],
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -13,7 +16,8 @@
     "autoload": {
         "psr-4": {
             "Weeks\\Mersey\\": "src/"
-        }
+        },
+        "files": ["src/helpers.php"]
     },
     "autoload-dev": {
         "classmap": ["tests/TestCase.php"],

@@ -6,12 +6,14 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 } else {
     require __DIR__ . '/../../autoload.php';
 }
-$env = __DIR__ . '/.env';
+$envFile = __DIR__ . '/.env';
 
-if (file_exists($env)) {
+if (file_exists($envFile)) {
     $dotEnv = new Dotenv\Dotenv(__DIR__);
     $dotEnv->load();
 }
+
+$appEnv = env('APP_ENV', 'production');
 
 use Weeks\Mersey\Console;
 use Weeks\Mersey\Exceptions\MerseyAppException;
@@ -20,25 +22,11 @@ use Weeks\Mersey\Factories\ServerFactory;
 use Weeks\Mersey\Mersey as MerseyApp;
 use Weeks\Mersey\Services\JsonValidator;
 
-$homeDir = getenv('HOME');
+$homeDir = env('HOME');
 
-// check for global installation
-$globalSchema = $homeDir . '/.composer/vendor/dannyweeks/mersey/schema.json';
-if (file_exists($globalSchema)) {
-    $schema = $globalSchema;
-} else {
-    $schema = 'schema.json';
-}
+$schema = getSchema($homeDir, $appEnv);
 
-// check for ~/.mersey servers before trying to use a local servers.json
-
-$globalServers = $homeDir . '/.mersey/servers.json';
-
-if (file_exists($globalServers)) {
-    $servers = $globalServers;
-} else {
-    $servers = 'servers.json';
-}
+$servers = getServerConfig($homeDir, $appEnv);
 
 putenv('MERSEY_SERVER_CONFIG=' . $servers);
 
