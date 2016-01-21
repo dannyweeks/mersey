@@ -48,7 +48,7 @@ class AvailableServersCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $table = new Table($output);
-        $table->setHeaders(array('Server', 'Ping'));
+        $table->setHeaders(array('Server', 'Alias', 'Ping'));
         $servers = $this->app->getServers();
 
         $progress = new ProgressBar($output, count($servers));
@@ -76,7 +76,8 @@ class AvailableServersCommand extends Command
     private function getPingRowData($server)
     {
         $data = [
-            sprintf("<comment>%s</comment>", $server->getDisplayName())
+            sprintf("<comment>%s</comment>", $server->getDisplayName()),
+            sprintf("<comment>%s</comment>", $server->getName())
         ];
 
         if ($ping = $server->ping()) {
