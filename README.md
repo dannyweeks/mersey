@@ -187,6 +187,11 @@ Below is a an example of a server called `personal` with one project called `pro
 ]
 ```
 
+## Planned Features
+- Online helper tool for generating server.json.
+- Global scripts that can be executed on any project, with syntax for variables such as project root.
+- Command that validates servers.json.
+
 ## Contributing
 
 All [pull requests](https://github.com/dannyweeks/mersey/pulls) and bug fixes are welcomed.
