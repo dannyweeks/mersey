@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+### Added 
+- More tests.
+
+### Changed
+- Improved unit tests for SSH command execution.
+- Refactored main app file to be less confusing.
+- Server's alias is listed when issuing the `ping` command.
+
 ### Fixed
 - Errors no longer return a code of 0.
 
