@@ -22,6 +22,7 @@ class AvailableServerCommandTest extends \TestCase
         $server = m::mock(Server::class);
 
         $server->shouldReceive('getDisplayName')->andReturn('server name');
+        $server->shouldReceive('getName')->andReturn('server alias');
         $server->shouldReceive('ping')->andReturn(123);
 
         $mersey->shouldReceive('getServers')->andReturn([$server]);
