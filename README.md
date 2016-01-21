@@ -10,6 +10,12 @@ Some cool things you can do:
 - [Connect to a server and got to a projects directory.](#go-to-a-project)
 - [Connect to a server and run a script of your choice.](#run-a-script)
 
+
+I also wrote a blog [post][post] when Mersey was first released you might find interesting.
+ 
+[post]: http://dannyweeks.com/blog/2015/11/19/introducing-mersey-a-server-management-tool/
+
+
 ## Prerequisites
 
 - OS X is the only supported operating system at the moment (Linux should be fine though!). More in the future!
