@@ -56,7 +56,7 @@ However, these can be [set manually](#additional-server-settings) on a per serve
 Below are the commands to interact with the `mersey` tool. 
 
 |     Description     |         Command        |         Options/Notes        |
-|:-------------------:|:----------------------:|:----------------------:|
+|:-------------------|----------------------:|----------------------:|
 | Add a server to the config | `mersey add`    | Interactive questions |
 | Edit the server config | `mersey edit`       | Opens in default text editor |
 | Ping servers and show results  |   `mersey ping` | |
