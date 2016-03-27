@@ -1,5 +1,6 @@
 <?php
-function testData($fileName)
+
+function loadFixture($type, $fileName)
 {
-    return __DIR__ . '/data/' . $fileName;
+    return sprintf('%s/fixtures/%s/%s', __DIR__, $type, $fileName);
 }

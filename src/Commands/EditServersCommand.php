@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weeks\Mersey\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -14,11 +13,21 @@ use Weeks\Mersey\Mersey;
 use Weeks\Mersey\Server;
 use Weeks\Mersey\Traits\PassThruTrait;
 
-
 class EditServersCommand extends Command
 {
     use PassThruTrait;
     protected $output;
+
+    /**
+     * @var Mersey
+     */
+    private $app;
+
+    public function __construct(Mersey $app)
+    {
+        parent::__construct('edit');
+        $this->app = $app;
+    }
 
     /**
      * Set up the command
@@ -26,8 +35,7 @@ class EditServersCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('edit')
-            ->setDescription('Edit the server config file. ');
+            ->setDescription('Edit the server config file');
     }
 
     /**
@@ -42,7 +50,7 @@ class EditServersCommand extends Command
         $this->output = $output;
         $output->writeln('<info>Editing servers.json</info>');
 
-        $command = 'open ' . env('MERSEY_SERVER_CONFIG');
+        $command = 'open ' . $this->app->getServersConfig(env('APP_ENV'));
 
         $this->passthru($command);
     }

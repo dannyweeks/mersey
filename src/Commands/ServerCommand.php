@@ -1,11 +1,15 @@
 <?php
 namespace Weeks\Mersey\Commands;
 
+use Illuminate\Support\Collection;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Weeks\Mersey\Project;
+use Weeks\Mersey\Script;
 use Weeks\Mersey\Server;
 use Weeks\Mersey\Traits\PassThruTrait;
 
@@ -43,6 +47,12 @@ class ServerCommand extends Command
                 'List available projects.'
             )
             ->addOption(
+                'scripts',
+                's',
+                InputOption::VALUE_NONE,
+                'List available scripts for a project.'
+            )
+            ->addOption(
                 'force',
                 'f',
                 InputOption::VALUE_NONE,
@@ -58,11 +68,13 @@ class ServerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = $output;
+        $arguments = $input->getArguments();
+        $requestedProjectName = $arguments['project'];
 
         if ($input->getOption('projects')) {
             $this->showProjects($output);
 
-            return;
+            return 0;
         }
 
         if (!$this->server->isAccessible() && !$input->getOption('force')) {
@@ -70,9 +82,6 @@ class ServerCommand extends Command
 
             return 1;
         }
-
-        $arguments = $input->getArguments();
-        $requestedProjectName = $arguments['project'];
 
         if ($requestedProjectName && !$this->checkProjectExists($requestedProjectName)) {
 
@@ -83,6 +92,16 @@ class ServerCommand extends Command
 
         $project = $this->server->getProject($requestedProjectName);
         $requestType = $this->getRequestType($arguments);
+
+        if ($input->getOption('scripts')) {
+            if (!$requestedProjectName) {
+                $output->writeln(sprintf("<error>You must specify a project to view it's scripts.</error>"));
+
+                return 1;
+            }
+
+            return $this->showScripts($output, $project, $project->getScripts());
+        }
 
         switch ($requestType) {
 
@@ -108,10 +127,10 @@ class ServerCommand extends Command
 
             case 'script':
 
-
                 $availableScripts = $project->availableScripts();
 
                 $scriptRequested = $arguments['script'];
+
 
                 if ($this->checkRequestedScriptExists($scriptRequested, $availableScripts)) {
                     $output->writeln($this->scriptNotFoundError($scriptRequested, $requestedProjectName));
@@ -119,14 +138,18 @@ class ServerCommand extends Command
                     return 1;
                 }
 
+                $requestedScript = $project->getScript($scriptRequested);
+
                 $output->writeln(sprintf('<info>Executing remote script \'%s\'...</info>', $scriptRequested));
-                $command = $this->server->getCommand($project->getScript($scriptRequested));
+                $command = sprintf('cd %s; %s', $project->getRoot(), $requestedScript->getCommand());
+                $command = $this->server->getCommand($command);
 
                 $this->passthru($command, $output);
 
                 break;
         }
 
+        return 0;
     }
 
     /**
@@ -142,23 +165,30 @@ class ServerCommand extends Command
      */
     protected function showProjects(OutputInterface $output)
     {
+        /** @var Collection $projects */
         $projects = $this->server->getProjects();
 
-        if (!empty($projects)) {
-
-            $output->writeln('Available projects for ' . $this->server->getDisplayName() . ': ');
-
-            foreach ($projects as $project) {
-
-                $output->writeln('    <info>' . $project->getName() . '</info>');
-            }
-
-            $output->writeln('example use: php mersey ' . $this->server->getName() . ' <projectname>');
+        if (empty($projects)) {
+            $output->writeln('<error>No projects for this server.</error>');
 
             return;
         }
 
-        $output->writeln('No projects for this server.');
+        $output->writeln('<comment>Available projects for ' . $this->server->getDisplayName() . ': </comment>');
+
+        $table = new Table($output);
+        $table
+            ->setRows($projects->transform(function(Project $project) {
+                return [
+                    sprintf("<info>%s</info>", $project->getName())
+                ];
+            })->toArray())
+        ;
+        $table->render();
+
+
+
+        $output->writeln('<comment>example use: php mersey ' . $this->server->getName() . ' <projectname></comment>');
     }
 
     /**
@@ -220,5 +250,31 @@ class ServerCommand extends Command
     protected function checkProjectExists($requestedProjectName)
     {
         return !empty($requestedProjectName) && $this->server->hasProject($requestedProjectName);
+    }
+
+    private function showScripts(OutputInterface $output, Project $project, Collection $scripts)
+    {
+        if ($scripts->count() == 0) {
+            $output->writeln('<error>No scripts for this project.</error>');
+
+            return 0;
+        }
+        $output->writeln("<comment>Scripts available for " . $project->getName() . "</comment>");
+
+        $table = new Table($output);
+        $table
+            ->setHeaders(['Script Name', 'Description'])
+            ->setRows(collect($scripts)->transform(function(Script $script) use ($output) {
+                return [
+                    "<info>$script->name</info>",
+                    ucwords($script->description)
+                ];
+            })->toArray())
+        ;
+        $table->render();
+
+        $output->writeln(sprintf("<comment>Example use: mersey %s %s <script name></comment>", $this->server->getName(), $project->getName()));
+
+        return 0;
     }
 }

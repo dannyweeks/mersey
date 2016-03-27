@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weeks\Mersey\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -13,18 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Weeks\Mersey\Mersey;
 use Weeks\Mersey\Server;
 
-
 class AvailableServersCommand extends Command
 {
-
     /**
      * @var Mersey
      */
     private $app;
 
-    public function __construct($name = null, Mersey $app)
+    public function __construct(Mersey $app)
     {
-        parent::__construct($name);
+        parent::__construct('ping');
         $this->app = $app;
     }
 
@@ -35,7 +32,7 @@ class AvailableServersCommand extends Command
     {
         $this
             ->setName('ping')
-            ->setDescription('Display availability of all registered servers. ');
+            ->setDescription('Display availability of all registered servers');
     }
 
     /**
@@ -51,7 +48,7 @@ class AvailableServersCommand extends Command
         $table->setHeaders(array('Server', 'Alias', 'Ping'));
         $servers = $this->app->getServers();
 
-        $progress = new ProgressBar($output, count($servers));
+        $progress = new ProgressBar($output, $servers->count());
         $output->writeln('Checking server availability');
         $progress->start();
 

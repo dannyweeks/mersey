@@ -12,20 +12,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $consoleMock
-     * @param $validatorMock
-     * @param $serverFactoryMock
-     * @param $projectFactoryMock
-     * @return Mersey
-     */
-    protected function getMersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock)
-    {
-        $consoleMock->shouldReceive('add')->atLeast()->once();
-
-        return new Mersey($consoleMock, $validatorMock, $serverFactoryMock, $projectFactoryMock);
-    }
-
-    /**
      * Execute a live command and return the output
      *
      * @param $command
@@ -34,11 +20,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function executeCommand($command)
     {
         ob_start();
-        passthru($command);
-        $output = ob_get_contents();
-        ob_end_clean();
+        passthru($command, $exitCode);
+        echo "\nTest Exit Code: " . $exitCode;
 
-        return $output;
+        return ob_get_clean();
     }
 
     /**
@@ -47,8 +32,32 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function assertCommandExecuted($command, $output)
     {
-        return $this->assertRegExp('/Executing command \'' . $command . '\'/i', $output);
+        $this->assertRegExp('/Executing command \'' . $command . '\'/i', $output);
     }
 
+    /**
+     * @param $output
+     * @param $code
+     */
+    protected function assertExitCode($code, $output)
+    {
+        $this->assertRegExp('/Test Exit Code: ' . $code . '/i', $output);
+    }
+
+    protected function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fputs($stream, $input);
+        rewind($stream);
+
+        return $stream;
+    }
+
+    protected function getMerseyMock()
+    {
+        $mersey = m::mock(Mersey::class);
+
+        return $mersey;
+    }
 }
 

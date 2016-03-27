@@ -5,12 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added 
-- More tests.
+- Projects have access to global scripts defined in scripts.json.
+- Create new servers with an interactive prompt using the `add` command.
+- Migrate from version 1 of Mersey to version 2 by running `mersey migrate 1-2`
 
 ### Changed
-- Improved unit tests for SSH command execution.
-- Refactored main app file to be less confusing.
+- Refactored large part of Mersey.
 - Server's alias is listed when issuing the `ping` command.
+- Errors in config files give more detailed messages.
+- Servers are in a `server:` command namespace. This does not break the syntax `mersey serverone superproject`.
 
 ### Fixed
 - Errors no longer return a code of 0.

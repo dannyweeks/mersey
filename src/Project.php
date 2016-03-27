@@ -1,15 +1,11 @@
 <?php
 
-
 namespace Weeks\Mersey;
 
+use Illuminate\Support\Collection;
 
-class Project {
-    /**
-     * Additional commands after a user has ran a script has ran.
-    */
-    const SCRIPT_COMMAND= "; read -p \"Remote script completed. Press enter to continue..\"; exit";
-
+class Project
+{
     /**
      * @var string
      */
@@ -19,16 +15,25 @@ class Project {
      * @var string
      */
     private $root;
+
     /**
-     * @var array
+     * @var Collection
      */
     private $scripts;
+    /**
+     * @var Mersey
+     */
+    private $mersey;
 
-    public function __construct($name, $root, $scripts = [])
+    public function __construct(Mersey $mersey, $config)
     {
-        $this->name = $name;
-        $this->root = $root;
-        $this->scripts = $scripts;
+        $this->mersey = $mersey;
+        $this->name = $config->name;
+        $this->root = $config->root;
+
+        $localScripts = isset($config->scripts) ? $this->loadScripts($config->scripts) : collect();
+
+        $this->scripts = collect(array_merge($localScripts->toArray(), $this->mersey->getGlobalScripts()));
     }
 
     /**
@@ -62,18 +67,25 @@ class Project {
      */
     public function availableScripts()
     {
-        return array_keys($this->scripts);
+        return $this->scripts->pluck('name')->toArray();
+    }
+
+    public function getScripts()
+    {
+        return $this->scripts;
     }
 
     /**
      * Get the command of a registered script.
      *
      * @param $name
-     * @return string
+     * @return Script
      */
     public function getScript($name)
     {
-        return $this->scripts[$name] . self::SCRIPT_COMMAND;
+        return $this->scripts->first(function ($key, $item) use ($name) {
+            return $item->name == $name;
+        });
     }
 
     /**
@@ -83,6 +95,17 @@ class Project {
     public function hasScript($name)
     {
         return in_array($name, $this->availableScripts());
+    }
+
+    private function loadScripts($scripts)
+    {
+        $collection = collect();
+
+        foreach ($scripts as $script) {
+            $collection->push(new Script($script));
+        }
+
+        return $collection;
     }
 
 }

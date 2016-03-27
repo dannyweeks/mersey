@@ -1,0 +1,12 @@
+{
+    "name": "testserver",
+    "username": "testuser",
+    "hostname": "example.com",
+    "displayName": "Test Server",
+    "projects": [
+        {
+            "name": "testproject",
+            "root": "/home/testserver/testproject"
+        }
+    ]
+}

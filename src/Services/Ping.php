@@ -4,6 +4,7 @@ namespace Weeks\Mersey\Services;
 
 class Ping extends \JJG\Ping implements PingInterface
 {
+
     /**
      * @param string $host
      * @return $this

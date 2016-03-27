@@ -2,7 +2,6 @@
 
 namespace Weeks\Mersey;
 
-
 use Weeks\Mersey\Services\Ping;
 use Weeks\Mersey\Traits\PassThruTrait;
 
@@ -27,34 +26,29 @@ class Server
     /**
      * @var string
      */
-    private $sshKey = '~/.ssh/id_rsa';
+    private $sshKey;
     /**
      * @var integer
      */
-    private $sshPort = 22;
+    private $sshPort;
+    private $mersey;
 
-    /**
-     * @param Services\Ping $pingService
-     * @param $name
-     * @param $username
-     * @param $hostname
-     * @param $displayName
-     * @param array $projects
-     */
-    public function __construct(Ping $pingService, $name, $username, $hostname, $displayName, $projects = [])
+    public function __construct(Mersey $mersey, $config)
     {
-        $this->pingService = $pingService;
+        $this->mersey = $mersey;
+        $this->name = $config->name;
+        $this->username = $config->username;
+        $this->hostname = $config->hostname;
+        $this->displayName = $config->displayName;
+        $this->sshPort = isset($config->port) ? $config->port : 22;
+        $this->sshKey = isset($config->sshKey) ? $config->sshKey : '~/.ssh/id_rsa';
 
-        $this->name = $name;
-        $this->username = $username;
-        $this->hostname = $hostname;
-        $this->displayName = $displayName;
-        $this->projects = $projects;
-
-        $this->pingService
-            ->setHost($this->hostname)
-            ->setPort($this->sshPort)
-            ->setTtl(2);
+        $this->projects = collect();
+        if (isset($config->projects)) {
+            foreach ($config->projects as $projectConfig) {
+                $this->projects->push(new Project($mersey, $projectConfig));
+            }
+        }
     }
 
     /**
@@ -79,9 +73,12 @@ class Server
      */
     public function ping()
     {
-        return $this->pingService->ping();
+        return $this->mersey
+            ->ping
+            ->setHost($this->getHostname())
+            ->setPort($this->getSshPort())
+            ->ping();
     }
-
 
     /**
      * @return bool
@@ -107,9 +104,8 @@ class Server
      */
     protected function execute($command)
     {
-        return passthru($command);
+        return $this->passthru($command);
     }
-
 
     /**
      * @return string
@@ -165,7 +161,9 @@ class Server
      */
     public function hasProject($name)
     {
-        return array_key_exists($name, $this->projects);
+        return $this->projects->first(function($key, Project $project) use ($name) {
+            return $project->getName() == $name;
+        }) ? true : false ;
     }
 
     /**
@@ -174,7 +172,9 @@ class Server
      */
     public function getProject($name)
     {
-        return array_get($this->projects, $name);
+        return $this->projects->first(function($key, Project $project) use ($name) {
+            return $project->getName() == $name;
+        });
     }
 
     /**

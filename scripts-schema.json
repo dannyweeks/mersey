@@ -1,0 +1,24 @@
+{
+    "title": "scripts",
+    "type": "array",
+    "items": {
+        "title": "Script",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "command": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "name",
+            "description",
+            "command"
+        ]
+    }
+}

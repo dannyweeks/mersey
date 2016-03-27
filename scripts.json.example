@@ -1,0 +1,12 @@
+[
+    {
+        "name": "pull",
+        "description": "Pulls the latest changes from git.",
+        "command": "git fetch --all; git reset --hard origin/master"
+    },
+    {
+        "name": "ltail",
+        "description": "Tail a Laravel App's log.",
+        "command": "tail -f storage/logs/laravel.log"
+    },
+]

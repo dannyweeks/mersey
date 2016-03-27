@@ -17,10 +17,11 @@ trait PassThruTrait
         }
 
         if (env('APP_ENV') == 'testing') {
-
             return $command;
         }
 
-        return passthru($command);
+        passthru($command, $exitCode);
+
+        return $exitCode;
     }
 }

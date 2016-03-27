@@ -1,0 +1,19 @@
+{
+    "name": "testserver",
+    "username": "testuser",
+    "hostname": "example.com",
+    "displayName": "Test Server",
+    "projects": [
+        {
+            "name": "testproject",
+            "root": "/home/testserver/testproject",
+            "scripts": [
+                {
+                    "name": "testscript",
+                    "description": "Test script.",
+                    "command": "running script on server"
+                }
+            ]
+        }
+    ]
+}

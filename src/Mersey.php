@@ -5,18 +5,14 @@ namespace Weeks\Mersey;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Weeks\Mersey\Commands\AddServerCommand;
 use Weeks\Mersey\Commands\AvailableServersCommand;
 use Weeks\Mersey\Commands\EditServersCommand;
-use Weeks\Mersey\Commands\HelpCommand;
 use Weeks\Mersey\Commands\ServerCommand;
-use Weeks\Mersey\Exceptions\IllegalScriptNameException;
-use Weeks\Mersey\Exceptions\IllegalServerNameException;
-use Weeks\Mersey\Exceptions\InvalidServerConfigException;
-use Weeks\Mersey\Factories\ProjectFactory;
-use Weeks\Mersey\Factories\ServerFactory;
-use Weeks\Mersey\Services\JsonValidator;
+use Illuminate\Container\Container;
+use Weeks\Mersey\Services\Ping;
 
-class Mersey
+class Mersey extends Container
 {
     protected $loadedServers;
 
@@ -26,62 +22,47 @@ class Mersey
     private $console;
 
     /**
-     * Reserved command words
-     *
-     * @var array
+     * @var Ping
      */
-    protected $protectedCommandNames = ['help', 'list'];
+    public $ping;
 
-    protected $protectedOptionNames = [
-        'projects',
-        'help',
-        'quiet',
-        'version',
-        'ansi',
-        'verbose',
-        'no-ansi',
-        'no-interaction'
-    ];
-    /**
-     * @var JsonValidator
-     */
-    private $jsonValidator;
-    /**
-     * @var ServerFactory
-     */
-    private $serverFactory;
-    /**
-     * @var ProjectFactory
-     */
-    private $projectFactory;
+    protected $configs = [];
+    public $scripts;
 
-    public function __construct(Application $console, JsonValidator $jsonValidator, ServerFactory $serverFactory, ProjectFactory $projectFactory)
+    public function __construct(Application $console, Ping $ping)
     {
         $this->console = $console;
-        $this->jsonValidator = $jsonValidator;
-
-        $this->console->add(new AvailableServersCommand('ping', $this));
-        $this->console->add(new EditServersCommand());
-        $this->servers = new Collection();
-        $this->serverFactory = $serverFactory;
-        $this->projectFactory = $projectFactory;
+        $this->ping = $ping;
+        $this->console->add(new AvailableServersCommand($this));
+        $this->console->add(new EditServersCommand($this));
+        $this->console->add(new AddServerCommand($this));
+        $this->servers = collect();
+        $this->scripts = collect();
     }
 
-    /**
-     * Loads the servers from json.
-     *
-     * @param $serversJson
-     */
-    public function loadServersFromJson($serversJson)
+    public function registerServers($serversConfig)
     {
+        foreach ($serversConfig as $serverConfig) {
+            $server = $this->createServer($serverConfig);
+            $this->servers->push($server);
 
-        $servers = json_decode(file_get_contents($serversJson));
+            $command = new ServerCommand('server:' . $server->getName());
+            $command->setDescription(sprintf('Connect to %s.', $server->getDisplayName()));
+            $command->setServer($server);
+            $this->console->add($command);
+        }
+    }
 
-        $this->validateServerJsonSchema($serversJson, $servers);
+    public function createServer($serverConfig)
+    {
+        return new Server($this, $serverConfig);
+    }
 
-        $this->ensureNoReservedCommandWordsUsed($servers);
-
-        $this->loadedServers = $servers;
+    public function registerGlobalScripts($scripts)
+    {
+        foreach ($scripts as $script) {
+            $this->scripts->push(new Script($script));
+        }
     }
 
     /**
@@ -91,16 +72,6 @@ class Mersey
      */
     public function run()
     {
-        foreach ($this->loadedServers as $server) {
-
-            $serverInstance = $this->registerServer($server);
-
-            $command = new ServerCommand($server->name);
-            $command->setDescription(sprintf('Connect to %s.', $server->displayName));
-            $command->setServer($serverInstance);
-            $this->console->add($command);
-        }
-
         $this->console->run();
     }
 
@@ -119,94 +90,61 @@ class Mersey
     public function renderException($e)
     {
         $this->console->renderException($e, new ConsoleOutput());
+        die();
     }
 
-    /**
-     * Validate the user servers against the schema.
-     *
-     * @param $serverJsonFile
-     * @param $parsedServers
-     *
-     * @throws InvalidServerConfigException
-     */
-    private function validateServerJsonSchema($serverJsonFile, $parsedServers)
+    public function getServersConfig($env)
     {
-        if (!$this->jsonValidator->validate($parsedServers)) {
-            $exceptionMessage = $serverJsonFile . " is not valid. Violations:\n";
-            foreach ($this->jsonValidator->getErrors() as $error) {
-                $exceptionMessage .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new InvalidServerConfigException($exceptionMessage);
-        }
+        return $this->getConfig($env, 'servers', 'servers.json');
     }
 
-    /**
-     * Check user hasn't tried to use a server name that is already used as a command.
-     *
-     * @param $servers
-     *
-     * @throws IllegalServerNameException
-     */
-    private function ensureNoReservedCommandWordsUsed($servers)
+    public function loadServerConfig($env)
     {
-        $serversNames = array_pluck($servers, 'name');
-
-        foreach ($this->protectedCommandNames as $protected) {
-            if (in_array($protected, $serversNames)) {
-                $format = "'%s' is reserved and cannot be used as a server name. Please use another name.";
-                throw new IllegalServerNameException(sprintf($format, $protected));
-            }
-        }
+        return $this->loadConfig('servers', $this->getServersConfig($env));
     }
 
-    /**
-     * @param $server
-     * @return Server
-     */
-    private function registerServer($server)
+    public function loadScriptConfig($env)
     {
-        $serverInstance = $this->serverFactory->create(
-            $server->name,
-            $server->username,
-            $server->hostname,
-            $server->displayName
-        );
+        $config = $this->getConfig($env, 'scripts', 'scripts.json');
 
-        if (!empty($server->sshKey)) {
-            $serverInstance->setSshKey($server->sshKey);
-        }
-
-        if (!empty($server->port)) {
-            $serverInstance->setSshPort($server->port);
-        }
-
-        if ($this->serverHasProjects($server)) {
-
-            foreach ($server->projects as $project) {
-
-                $scripts = isset($project->scripts) ? (array) $project->scripts : [];
-
-                $projectInstance = $this->projectFactory->create(
-                    $project->name,
-                    $project->root,
-                    $scripts
-                );
-
-                $serverInstance->addProject($projectInstance);
-            }
-        }
-
-        $this->servers->push($serverInstance);
-
-        return $serverInstance;
+        return $this->loadConfig('scripts', $config);
     }
 
-    /**
-     * @param $server
-     * @return bool
-     */
-    private function serverHasProjects($server)
+    private function getConfig($env, $type, $fileName)
     {
-        return isset($server->projects) && is_array($server->projects);
+        $configPath = env('HOME') . '/.mersey/' . $fileName;
+
+        if ($env == 'testing') {
+            $configPath = "tests/fixtures/{$type}/valid.json";
+        }
+
+        if (!file_exists($configPath) || $env == 'local') {
+            $configPath = $fileName;
+        }
+
+        return $configPath;
+    }
+
+    private function loadConfig($type, $fileName)
+    {
+        if (isset($this->configs[$type])) {
+            return $this->configs[$type];
+        }
+
+        $json = file_exists($fileName) ? file_get_contents($fileName) : '[]';
+
+        $this->configs[$type] = json_decode($json);
+
+        return $this->configs[$type];
+    }
+
+    public function updateConfig($file, array $config)
+    {
+        return file_put_contents($file, json_encode($config, JSON_PRETTY_PRINT));
+    }
+
+    public function getGlobalScripts()
+    {
+        return $this->scripts->toArray();
     }
 }

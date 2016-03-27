@@ -26,14 +26,16 @@
     "require": {
         "symfony/console": "^2.7",
         "justinrainbow/json-schema": "^1.5",
-        "illuminate/support": "^5.1",
+        "illuminate/support": "^5.2",
+        "illuminate/container": "^5.2",
         "geerlingguy/ping": "^1.0",
         "vlucas/phpdotenv": "^2.2"
     },
     "require-dev": {
         "symfony/var-dumper": "^2.7",
         "phpunit/phpunit": "^4.8",
-        "mockery/mockery": "^0.9.4"
+        "mockery/mockery": "^0.9.4",
+        "ofbeaton/console-tester": "^1.1"
     },
     "bin": [
         "mersey"

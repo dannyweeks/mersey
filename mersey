@@ -1,52 +1,56 @@
 #!/usr/bin/env php
 <?php
 
+use Weeks\Mersey\Console;
+use Weeks\Mersey\Schema;
+use Weeks\Mersey\Services\JsonValidator;
+use Weeks\Mersey\Services\Ping;
+
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
 } else {
     require __DIR__ . '/../../autoload.php';
 }
 
-$envFile = __DIR__ . '/.env';
-
-if (file_exists($envFile)) {
+if (file_exists(__DIR__ . '/.env')) {
     $dotEnv = new Dotenv\Dotenv(__DIR__);
     $dotEnv->load();
 }
 
-$appEnv = env('APP_ENV', 'production');
+$env = env('APP_ENV', 'production');
+$home = env('HOME');
 
-use Weeks\Mersey\Console;
-use Weeks\Mersey\Exceptions\MerseyAppException;
-use Weeks\Mersey\Factories\ProjectFactory;
-use Weeks\Mersey\Factories\ServerFactory;
-use Weeks\Mersey\Mersey as MerseyApp;
-use Weeks\Mersey\Services\JsonValidator;
-
-$homeDir = env('HOME');
-
-$schema = getSchema($homeDir, $appEnv);
-
-$servers = getServerConfig($homeDir, $appEnv);
-
-putenv('MERSEY_SERVER_CONFIG=' . $servers);
-
-$app = new MerseyApp(
-    new Console('Mersey', '1.1.1'),
-    new JsonValidator($schema),
-    new ServerFactory(),
-    new ProjectFactory()
+$mersey = new \Weeks\Mersey\Mersey(
+    new Console('Mersey', '2.0.0'),
+    new Ping('127.0.0.1', 2)
 );
 
+$mersey->singleton(JsonValidator::class, function () {
+    return new JsonValidator();
+});
+
+$mersey->bind('servers_schema', function () use ($env, $home) {
+    return new Schema('servers-schema.json', $env, $home);
+});
+
+$mersey->bind('scripts_schema', function () use ($env, $home) {
+    return new Schema('scripts-schema.json', $env, $home);
+});
+
+/** @var JsonValidator $validator */
+$validator = $mersey->make(JsonValidator::class);
+$serversSchema = $mersey->make('servers_schema');
+$scriptsSchema = $mersey->make('scripts_schema');
+$servers = $mersey->loadServerConfig($env);
+$scripts = $mersey->loadScriptConfig($env);
+
 try {
-
-    $app->loadServersFromJson($servers);
-    $app->run();
-
-} catch (MerseyAppException $e) {
-
-    $app->renderException($e);
-    die();
-
+    $validator->setSchema($serversSchema)->validate($servers);
+    $validator->setSchema($scriptsSchema)->validate($scripts);
+} catch (\Exception $e) {
+    $mersey->renderException($e);
 }
 
+$mersey->registerGlobalScripts($scripts);
+$mersey->registerServers($servers);
+$mersey->run();

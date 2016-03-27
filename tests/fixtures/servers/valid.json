@@ -1,0 +1,22 @@
+[
+    {
+        "name": "servername",
+        "displayName": "Test Server",
+        "username": "vagrant",
+        "hostname": "127.0.0.1",
+        "port": 2222,
+        "projects": [
+            {
+                "name": "projectname",
+                "root": "/var/www/projectname",
+                "scripts": []
+            }
+        ]
+    },
+    {
+        "name": "server2",
+        "displayName": "Test2 Server",
+        "username": "danny",
+        "hostname": "8.8.8.8"
+    }
+]
