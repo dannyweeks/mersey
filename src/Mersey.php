@@ -7,6 +7,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Weeks\Mersey\Commands\AddServerCommand;
 use Weeks\Mersey\Commands\AvailableServersCommand;
+use Weeks\Mersey\Commands\EditScriptsCommand;
 use Weeks\Mersey\Commands\EditServersCommand;
 use Weeks\Mersey\Commands\ServerCommand;
 use Illuminate\Container\Container;
@@ -35,6 +36,7 @@ class Mersey extends Container
         $this->ping = $ping;
         $this->console->add(new AvailableServersCommand($this));
         $this->console->add(new EditServersCommand($this));
+        $this->console->add(new EditScriptsCommand($this));
         $this->console->add(new AddServerCommand($this));
         $this->servers = collect();
         $this->scripts = collect();
@@ -96,6 +98,11 @@ class Mersey extends Container
     public function getServersConfig($env)
     {
         return $this->getConfig($env, 'servers', 'servers.json');
+    }
+
+    public function getScriptsConfig($env)
+    {
+        return $this->getConfig($env, 'scripts', 'scripts.json');
     }
 
     public function loadServerConfig($env)

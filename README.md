@@ -59,11 +59,11 @@ Below are the commands to interact with the `mersey` tool.
 |:-------------------|----------------------:|----------------------:|
 | Add a server to the config | `mersey add`    | Interactive questions |
 | Edit the server config | `mersey edit`       | Opens in default text editor |
+| Edit global scripts | `mersey scripts`       | Opens in default text editor |
 | Ping servers and show results  |   `mersey ping` | |
 | Connect to a server | `mersey  <servername>` | -f/--force Skip reachable test. -p/--projects List projects |
 | Go to a project     | `mersey <servername> <projectname>`  | -f/--force Skip reachable test. -s/--scripts List scripts |
 | Run a script        | `mersey <servername> <projectname> <scriptname>`  | -f/--force Skip reachable test. |
-
 
 ## Defining Servers
 There is a small amount of setting required to get up and running. Each server is an object in a json array. A server object
@@ -234,18 +234,17 @@ Below is a an example of a server called `personal` with one project called `pro
 
 ### Upgrading To Version 2
 
-Update Mersey via Composer.
+*Update Mersey via Composer.*
 
-v2 has added 'global scripts' so we need to create the file where they are stored.
+`mersey global require dannyweeks/mersey:^2`
+
+*Create global scripts file.*
 
 `cp -i ~/.composer/vendor/dannyweeks/mersey/scripts.json.example ~/.mersey/scripts.json`
 
-All your scripts need to be converted into script objects. 
+*Convert project scripts to objects.*
 
-See the scripts [per project](#per-project) section for more details.
-
-## Planned Features
-- Online helper tool.
+The way scripts are defined has changed therefore must be updated `open ~/.mersey/servers.json`. See the scripts [per project](#per-project) section for more details.
 
 ## Contributing
 
