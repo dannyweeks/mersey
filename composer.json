@@ -28,6 +28,7 @@
         "justinrainbow/json-schema": "^1.5",
         "illuminate/support": "^5.2",
         "illuminate/container": "5.2.21",
+        "illuminate/contracts": "5.2.21",
         "geerlingguy/ping": "^1.0",
         "vlucas/phpdotenv": "^2.2"
     },
