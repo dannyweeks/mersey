@@ -7,20 +7,32 @@ use Illuminate\Support\Collection;
 class Project
 {
     /**
+     * The name of the projects
+     *
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
+     * The root directory of the project
+     *
      * @var string
      */
-    private $root;
+    protected $root;
 
     /**
+     * Collection of scripts available to this project.
+     *
      * @var Collection
      */
-    private $scripts;
+    protected $scripts;
 
+    /**
+     * Project constructor.
+     *
+     * @param $config
+     * @param $globalScripts
+     */
     public function __construct($config, $globalScripts)
     {
         $this->name = $config->name;
@@ -65,6 +77,11 @@ class Project
         return $this->scripts->pluck('name')->toArray();
     }
 
+    /**
+     * Get the scripts
+     *
+     * @return Collection
+     */
     public function getScripts()
     {
         return $this->scripts;
@@ -74,6 +91,7 @@ class Project
      * Get the command of a registered script.
      *
      * @param $name
+     *
      * @return Script
      */
     public function getScript($name)
@@ -84,15 +102,13 @@ class Project
     }
 
     /**
-     * @param $name
-     * @return bool
+     * Create collection of Script objects.
+     *
+     * @param $scripts
+     *
+     * @return Collection
      */
-    public function hasScript($name)
-    {
-        return in_array($name, $this->availableScripts());
-    }
-
-    private function loadScripts($scripts)
+    protected function loadScripts($scripts)
     {
         $collection = collect();
 

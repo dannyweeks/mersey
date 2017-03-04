@@ -35,10 +35,10 @@ class ServerCommand extends Command
     protected $app;
 
     /**
-     * AddServerCommand constructor.
+     * ServerCommand constructor.
      *
      * @param Mersey $app
-     * @param        $name
+     * @param string $name
      */
     public function __construct(Mersey $app, $name)
     {
@@ -131,7 +131,12 @@ class ServerCommand extends Command
         switch ($requestType) {
 
             case 'server':
-                $output->writeln(sprintf('<info>Connecting to \'%s\'...</info>', $this->server->getDisplayName()));
+                $output->writeln(
+                    sprintf(
+                        '<info>Connecting to \'%s\'...</info>',
+                        $this->server->getDisplayName()
+                    )
+                );
                 $this->passthru($this->server->getCommand());
                 break;
 

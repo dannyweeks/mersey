@@ -91,7 +91,7 @@ class Server
      *
      * @param string $remoteCommand
      *
-     * @return bool|void
+     * @return string
      */
     public function getCommand($remoteCommand = '')
     {
@@ -105,12 +105,23 @@ class Server
     }
 
     /**
+     * Get the command used to connect to a server.
+     *
+     * -t allow interaction
+     * -p define the port to connect on
+     * -i define the identity file
+     *
      * @return string
      */
     protected function getConnectionCommand()
     {
-        return sprintf("ssh -t -p %d -i %s %s@%s", $this->getSshPort(), $this->getSshKey(), $this->getUsername(),
-            $this->getHostname());
+        return sprintf(
+            "ssh -t -p %d -i %s %s@%s",
+            $this->getSshPort(),
+            $this->getSshKey(),
+            $this->getUsername(),
+            $this->getHostname()
+        );
     }
 
     /**
