@@ -236,7 +236,7 @@ Below is a an example of a server called `personal` with one project called `pro
 
 *Update Mersey via Composer.*
 
-`mersey global require dannyweeks/mersey:^2`
+`composer global require dannyweeks/mersey:^2`
 
 *Create global scripts file.*
 
