@@ -84,7 +84,7 @@ class AvailableServersCommand extends Command
             sprintf("<comment>%s</comment>", $server->getName())
         ];
 
-        if ($ping = $server->ping()) {
+        if ($ping = $this->app->pingServer($server)) {
             $data[] = $ping;
 
             return $data;

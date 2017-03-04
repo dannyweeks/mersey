@@ -1,9 +1,22 @@
 <?php
 
-namespace Weeks\Mersey\Services;
+namespace Weeks\Mersey\Services\Ping;
 
-class Ping extends \JJG\Ping implements PingInterface
+use JJG\Ping;
+
+class JJGPing extends Ping implements PingInterface
 {
+    /**
+     * Perform a ping
+     *
+     * @param string $method
+     *
+     * @return mixed
+     */
+    public function ping($method = 'fsockopen')
+    {
+        return parent::ping($method);
+    }
 
     /**
      * @param string $host

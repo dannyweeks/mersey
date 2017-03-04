@@ -4,7 +4,8 @@
 use Weeks\Mersey\Console;
 use Weeks\Mersey\Schema;
 use Weeks\Mersey\Services\JsonValidator;
-use Weeks\Mersey\Services\Ping;
+use Weeks\Mersey\Services\Ping\JJGPing;
+use Weeks\Mersey\Services\Ping\PingInterface;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
@@ -22,12 +23,15 @@ $home = env('HOME');
 
 define('MERSEY_VERSION', '2.0.0');
 $mersey = new \Weeks\Mersey\Mersey(
-    new Console('Mersey', MERSEY_VERSION),
-    new Ping('127.0.0.1', 2)
+    new Console('Mersey', MERSEY_VERSION)
 );
 
 $mersey->singleton(JsonValidator::class, function () {
     return new JsonValidator();
+});
+
+$mersey->singleton(PingInterface::class, function () {
+    return new JJGPing('127.0.0.1', 2);
 });
 
 $mersey->bind('servers_schema', function () use ($env, $home) {

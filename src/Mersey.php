@@ -11,7 +11,7 @@ use Weeks\Mersey\Commands\EditScriptsCommand;
 use Weeks\Mersey\Commands\EditServersCommand;
 use Weeks\Mersey\Commands\ServerCommand;
 use Illuminate\Container\Container;
-use Weeks\Mersey\Services\Ping;
+use Weeks\Mersey\Services\Ping\PingInterface;
 
 class Mersey extends Container
 {
@@ -21,7 +21,7 @@ class Mersey extends Container
     protected $console;
 
     /**
-     * @var Ping
+     * @var PingInterface
      */
     protected $ping;
 
@@ -43,13 +43,11 @@ class Mersey extends Container
     /**
      * Mersey constructor.
      *
-     * @param Application $console
-     * @param Ping        $ping
+     * @param Application   $console
      */
-    public function __construct(Application $console, Ping $ping)
+    public function __construct(Application $console)
     {
         $this->console = $console;
-        $this->ping = $ping;
 
         /**
          * Register Mersey Commands
@@ -259,7 +257,7 @@ class Mersey extends Container
      */
     public function pingServer(Server $server)
     {
-        return $this->ping
+        return $this->make(PingInterface::class)
             ->setHost($server->getHostname())
             ->setPort($server->getSshPort())
             ->ping();

@@ -1,9 +1,9 @@
 <?php
 
-namespace Weeks\Mersey\Services;
+namespace Weeks\Mersey\Services\Ping;
 
 interface PingInterface {
-    public function ping();
+    public function ping($method);
     public function setHost($host);
     public function setTtl($ttl);
     public function setPort($port);

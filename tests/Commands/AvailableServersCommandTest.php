@@ -13,11 +13,11 @@ class AvailableServersCommandTest extends TestCase
     public function execute_displays_the_servers()
     {
         $mersey = $this->getMerseyMock();
+        $mersey->shouldReceive('pingServer')->andReturn(1234);
 
         $server = m::mock(Server::class);
         $server->shouldReceive('getDisplayName')->andReturn('Test Server');
         $server->shouldReceive('getName')->andReturn('test');
-        $server->shouldReceive('ping')->andReturn(1234);
 
         $mersey->shouldReceive('getServers')->andReturn(collect([$server]));
 
