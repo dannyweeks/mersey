@@ -14,6 +14,8 @@ class ServerCommandTest extends TestCase
     public function execute_connects_to_a_basic_server()
     {
         $mersey = $this->getMerseyMock();
+        $mersey->shouldReceive('getGlobalScripts')->andReturn([]);
+        $mersey->shouldReceive('serverIsAccessible')->andReturn(true);
 
         $commandInstance = $this->createCommand($mersey, $this->getTestServer('basic'));
 
@@ -36,6 +38,7 @@ class ServerCommandTest extends TestCase
         $mersey = $this->getMerseyMock();
 
         $mersey->shouldReceive('getGlobalScripts')->andReturn([]);
+        $mersey->shouldReceive('serverIsAccessible')->andReturn(true);
 
         $commandInstance = $this->createCommand($mersey, $this->getTestServer('with-project'));
 
@@ -64,6 +67,7 @@ class ServerCommandTest extends TestCase
         $mersey = $this->getMerseyMock();
 
         $mersey->shouldReceive('getGlobalScripts')->andReturn([]);
+        $mersey->shouldReceive('serverIsAccessible')->andReturn(true);
 
         $commandInstance = $this->createCommand($mersey, $this->getTestServer('with-script'));
 
@@ -87,10 +91,9 @@ class ServerCommandTest extends TestCase
 
     private function createCommand($mersey, $config)
     {
-        $command = new \Weeks\Mersey\Commands\ServerCommand($mersey);
-        $command->setName($config->name);
+        $command = new \Weeks\Mersey\Commands\ServerCommand($mersey, $config->name);
 
-        $command->setServer(new TestServer($mersey, $config));
+        $command->setServer(new TestServer($config, $mersey->getGlobalScripts()));
 
         return $command;
     }

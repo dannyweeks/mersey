@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Weeks\Mersey\Mersey;
 use Weeks\Mersey\Project;
 use Weeks\Mersey\Script;
 use Weeks\Mersey\Server;
@@ -27,6 +28,23 @@ class ServerCommand extends Command
      * @var OutputInterface
      */
     protected $output;
+
+    /**
+     * @var Mersey
+     */
+    protected $app;
+
+    /**
+     * AddServerCommand constructor.
+     *
+     * @param Mersey $app
+     * @param        $name
+     */
+    public function __construct(Mersey $app, $name)
+    {
+        parent::__construct($name);
+        $this->app = $app;
+    }
 
     /**
      * Set standard config of command.
@@ -84,7 +102,7 @@ class ServerCommand extends Command
             return 0;
         }
 
-        if (!$this->server->isAccessible() && !$input->getOption('force')) {
+        if (!$this->app->serverIsAccessible($this->server) && !$input->getOption('force')) {
             $output->writeln(sprintf("<error>%s is unreachable.</error>", $this->server->getDisplayName()));
 
             return 1;

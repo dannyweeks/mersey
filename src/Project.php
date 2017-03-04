@@ -20,20 +20,15 @@ class Project
      * @var Collection
      */
     private $scripts;
-    /**
-     * @var Mersey
-     */
-    private $mersey;
 
-    public function __construct(Mersey $mersey, $config)
+    public function __construct($config, $globalScripts)
     {
-        $this->mersey = $mersey;
         $this->name = $config->name;
         $this->root = $config->root;
 
         $localScripts = isset($config->scripts) ? $this->loadScripts($config->scripts) : collect();
 
-        $this->scripts = collect(array_merge($localScripts->toArray(), $this->mersey->getGlobalScripts()));
+        $this->scripts = collect(array_merge($localScripts->toArray(), $globalScripts));
     }
 
     /**

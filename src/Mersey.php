@@ -23,7 +23,7 @@ class Mersey extends Container
     /**
      * @var Ping
      */
-    public $ping;
+    protected $ping;
 
     /**
      * @var array
@@ -42,8 +42,9 @@ class Mersey extends Container
 
     /**
      * Mersey constructor.
+     *
      * @param Application $console
-     * @param Ping $ping
+     * @param Ping        $ping
      */
     public function __construct(Application $console, Ping $ping)
     {
@@ -73,7 +74,7 @@ class Mersey extends Container
             $server = $this->createServer($serverConfig);
             $this->servers->push($server);
 
-            $command = new ServerCommand('server:' . $server->getName());
+            $command = new ServerCommand($this, 'server:' . $server->getName());
             $command->setDescription(sprintf('Connect to %s.', $server->getDisplayName()));
             $command->setServer($server);
             $this->console->add($command);
@@ -82,11 +83,12 @@ class Mersey extends Container
 
     /**
      * @param $serverConfig
+     *
      * @return Server
      */
     protected function createServer($serverConfig)
     {
-        return new Server($this, $serverConfig);
+        return new Server($serverConfig, $this->getGlobalScripts());
     }
 
     /**
@@ -121,29 +123,58 @@ class Mersey extends Container
 
     /**
      * Renders a caught exception.
+     *
      * @param $e
      */
-    public function renderException($e)
+    public function renderException(\Exception $e)
     {
         $this->console->renderException($e, new ConsoleOutput());
         die();
     }
 
+    /**
+     * Get the servers config file path.
+     *
+     * @param $env
+     *
+     * @return string
+     */
     public function getServersConfig($env)
     {
         return $this->getConfig($env, 'servers', 'servers.json');
     }
 
+    /**
+     * Get the scripts config file path.
+     *
+     * @param $env
+     *
+     * @return string
+     */
     public function getScriptsConfig($env)
     {
         return $this->getConfig($env, 'scripts', 'scripts.json');
     }
 
+    /**
+     * Get the contents of the server config file as json.
+     *
+     * @param $env
+     *
+     * @return mixed
+     */
     public function loadServerConfig($env)
     {
         return $this->loadConfig('servers', $this->getServersConfig($env));
     }
 
+    /**
+     * Load the contents of the script config file.
+     *
+     * @param $env
+     *
+     * @return mixed
+     */
     public function loadScriptConfig($env)
     {
         $config = $this->getConfig($env, 'scripts', 'scripts.json');
@@ -151,7 +182,16 @@ class Mersey extends Container
         return $this->loadConfig('scripts', $config);
     }
 
-    private function getConfig($env, $type, $fileName)
+    /**
+     * Get the path of a config file.
+     *
+     * @param $env
+     * @param $type
+     * @param $fileName
+     *
+     * @return string
+     */
+    protected function getConfig($env, $type, $fileName)
     {
         $configPath = env('HOME') . '/.mersey/' . $fileName;
 
@@ -166,7 +206,15 @@ class Mersey extends Container
         return $configPath;
     }
 
-    private function loadConfig($type, $fileName)
+    /**
+     * Load a config file.
+     *
+     * @param $type
+     * @param $fileName
+     *
+     * @return mixed
+     */
+    protected function loadConfig($type, $fileName)
     {
         if (isset($this->configs[$type])) {
             return $this->configs[$type];
@@ -179,13 +227,53 @@ class Mersey extends Container
         return $this->configs[$type];
     }
 
+    /**
+     * Update a config file
+     *
+     * @param       $file
+     * @param array $config
+     *
+     * @return int
+     */
     public function updateConfig($file, array $config)
     {
         return file_put_contents($file, json_encode($config, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * Get the global scripts array.
+     *
+     * @return array
+     */
     public function getGlobalScripts()
     {
         return $this->scripts->toArray();
+    }
+
+    /**
+     * Ping a server
+     *
+     * @param Server $server
+     *
+     * @return integer
+     */
+    public function pingServer(Server $server)
+    {
+        return $this->ping
+            ->setHost($server->getHostname())
+            ->setPort($server->getSshPort())
+            ->ping();
+    }
+
+    /**
+     * Test if a server is accessible.
+     *
+     * @param Server $server
+     *
+     * @return bool
+     */
+    public function serverIsAccessible(Server $server)
+    {
+        return $this->pingServer($server) ? true : false;
     }
 }

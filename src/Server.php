@@ -64,21 +64,13 @@ class Server
     protected $sshPort;
 
     /**
-     * The mersey app
-     *
-     * @var Mersey
-     */
-    protected $mersey;
-
-    /**
      * Server constructor.
      *
-     * @param Mersey $mersey
      * @param string $config the config of this server
+     * @param        $globalScripts
      */
-    public function __construct(Mersey $mersey, $config)
+    public function __construct($config, $globalScripts)
     {
-        $this->mersey = $mersey;
         $this->name = $config->name;
         $this->username = $config->username;
         $this->hostname = $config->hostname;
@@ -89,7 +81,7 @@ class Server
         $this->projects = collect();
         if (isset($config->projects)) {
             foreach ($config->projects as $projectConfig) {
-                $this->projects->push(new Project($mersey, $projectConfig));
+                $this->projects->push(new Project($projectConfig, $globalScripts));
             }
         }
     }
@@ -110,28 +102,6 @@ class Server
         }
 
         return $command;
-    }
-
-    /**
-     * Ping this server
-     *
-     * @return int|bool
-     */
-    public function ping()
-    {
-        return $this->mersey
-            ->ping
-            ->setHost($this->getHostname())
-            ->setPort($this->getSshPort())
-            ->ping();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAccessible()
-    {
-        return $this->ping() ? true : false;
     }
 
     /**
@@ -236,34 +206,10 @@ class Server
     }
 
     /**
-     * @param string $sshKey
-     *
-     * @return $this
-     */
-    public function setSshKey($sshKey)
-    {
-        $this->sshKey = $sshKey;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getSshPort()
     {
         return $this->sshPort;
-    }
-
-    /**
-     * @param int $sshPort
-     *
-     * @return $this
-     */
-    public function setSshPort($sshPort)
-    {
-        $this->sshPort = $sshPort;
-
-        return $this;
     }
 }
