@@ -22,6 +22,10 @@ class ServerCommand extends Command
      * @var \Weeks\Mersey\Server
      */
     protected $server;
+
+    /**
+     * @var OutputInterface
+     */
     protected $output;
 
     /**

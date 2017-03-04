@@ -5,6 +5,7 @@ namespace Weeks\Mersey;
 class Script
 {
     public $name, $description, $command;
+
     /**
      * Additional commands after a user has ran a script has ran.
      */

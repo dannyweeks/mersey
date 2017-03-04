@@ -15,33 +15,58 @@ use Weeks\Mersey\Services\Ping;
 
 class Mersey extends Container
 {
-    protected $loadedServers;
-
     /**
      * @var Application
      */
-    private $console;
+    protected $console;
 
     /**
      * @var Ping
      */
     public $ping;
 
+    /**
+     * @var array
+     */
     protected $configs = [];
-    public $scripts;
 
+    /**
+     * @var Collection
+     */
+    protected $scripts;
+
+    /**
+     * @var Collection
+     */
+    protected $servers;
+
+    /**
+     * Mersey constructor.
+     * @param Application $console
+     * @param Ping $ping
+     */
     public function __construct(Application $console, Ping $ping)
     {
         $this->console = $console;
         $this->ping = $ping;
+
+        /**
+         * Register Mersey Commands
+         */
         $this->console->add(new AvailableServersCommand($this));
         $this->console->add(new EditServersCommand($this));
         $this->console->add(new EditScriptsCommand($this));
         $this->console->add(new AddServerCommand($this));
+
         $this->servers = collect();
         $this->scripts = collect();
     }
 
+    /**
+     * Register all servers listed in the config
+     *
+     * @param $serversConfig
+     */
     public function registerServers($serversConfig)
     {
         foreach ($serversConfig as $serverConfig) {
@@ -55,11 +80,20 @@ class Mersey extends Container
         }
     }
 
-    public function createServer($serverConfig)
+    /**
+     * @param $serverConfig
+     * @return Server
+     */
+    protected function createServer($serverConfig)
     {
         return new Server($this, $serverConfig);
     }
 
+    /**
+     * Register scripts from the global script config.
+     *
+     * @param $scripts
+     */
     public function registerGlobalScripts($scripts)
     {
         foreach ($scripts as $script) {

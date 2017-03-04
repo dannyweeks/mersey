@@ -3,7 +3,7 @@
 namespace Weeks\Mersey\Commands;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -12,16 +12,36 @@ use Weeks\Mersey\Mersey;
 
 class AddServerCommand extends Command
 {
-    protected $output, $input;
-    /** @var \Symfony\Component\Console\Helper\QuestionHelper */
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * @var QuestionHelper
+     */
     protected $questionHelper;
+
+    /**
+     * @var string
+     */
     protected $configFile;
 
     /**
      * @var Mersey
      */
-    private $app;
+    protected $app;
 
+    /**
+     * AddServerCommand constructor.
+     *
+     * @param Mersey $app
+     */
     public function __construct(Mersey $app)
     {
         parent::__construct('add');
@@ -39,9 +59,10 @@ class AddServerCommand extends Command
     /**
      * Create new server.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @return int|null|void
+     *
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -65,7 +86,8 @@ class AddServerCommand extends Command
         };
 
         $serverDetails = [];
-        $serverDetails['name'] = strtolower($this->askQuestion('Server name/alias (what you will type into the command line)', null, $required));
+        $serverDetails['name'] = strtolower($this->askQuestion('Server name/alias (what you will type into the command line)',
+            null, $required));
 
         if (in_array($serverDetails['name'], $usedNames->toArray())) {
             $question = sprintf("'%s' is already defined. Would you like to overwrite it? (y/N)",
@@ -73,6 +95,7 @@ class AddServerCommand extends Command
 
             if (!$this->askConfirmQuestion($question, 'error')) {
                 $output->writeln('Aborted server definition.');
+
                 return 0;
             }
 
@@ -90,14 +113,14 @@ class AddServerCommand extends Command
 
         if ($this->askConfirmQuestion('Required information defined. Add some optional settings? (y/N)')) {
             $serverDetails['sshKey'] = $this->askQuestion('SSH key location (default: ~/.ssh/id_rsa)');
-            $serverDetails['port'] = (int) $this->askQuestion('SSH port (default: 22)');
+            $serverDetails['port'] = (int)$this->askQuestion('SSH port (default: 22)');
         }
 
         $addProjects = $this->askConfirmQuestion('Define a project? (y/N)');
 
         while ($addProjects) {
             $project = [];
-            $project['name'] = $this->askQuestion('Project name?');
+            $project['name'] = $this->askQuestion('Project name');
             $project['root'] = $this->askQuestion('Path to project root?');
 
             $output->writeln(sprintf('<comment>The project \'%s\' has been defined.</comment>', $project['name']));
@@ -133,8 +156,22 @@ class AddServerCommand extends Command
         return 0;
     }
 
-    protected function askQuestion($question, $default = null, callable $validator = null, $tag = 'info')
-    {
+    /**
+     * Helper method to ask a question
+     *
+     * @param string        $question
+     * @param null          $default
+     * @param callable|null $validator
+     * @param string        $tag
+     *
+     * @return string
+     */
+    protected function askQuestion(
+        $question,
+        $default = null,
+        callable $validator = null,
+        $tag = 'info'
+    ) {
         $question = new Question("<$tag>$question:</$tag> ", $default);
 
         $question->setValidator($validator);
@@ -142,21 +179,19 @@ class AddServerCommand extends Command
         return $this->questionHelper->ask($this->input, $this->output, $question);
     }
 
+    /**
+     * Helper method to ask a confirmation question
+     *
+     * @param string $question
+     * @param string $tag
+     *
+     * @return string
+     */
     protected function askConfirmQuestion($question, $tag = 'question')
     {
         $question = new ConfirmationQuestion("<$tag>$question:</$tag> ");
 
         return $this->questionHelper->ask($this->input, $this->output, $question);
-    }
-
-    private function toTable(array $data)
-    {
-        $table = new Table($this->output);
-        $table
-            ->setHeaders(array_map('ucwords', array_keys($data)))
-            ->addRow($data);
-
-        $table->render();
     }
 }
 

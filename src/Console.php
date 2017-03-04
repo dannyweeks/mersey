@@ -33,10 +33,18 @@ class Console extends Application
         ));
     }
 
+    /**
+     * For improved UX, try to interact with server without the need for 'server:' prefix first.
+     *
+     * @param InputInterface $input
+     *
+     * @return string
+     */
     protected function getCommandName(InputInterface $input)
     {
         try {
-            return $this->find('server:' . $input->getFirstArgument())->getName();
+            return $this->find('server:' . $input->getFirstArgument())
+                ->getName();
         } catch (CommandNotFoundException $e) {
             return parent::getCommandName($input);
         }
