@@ -2,17 +2,11 @@
 
 namespace Weeks\Mersey;
 
-use Weeks\Mersey\Services\Ping;
 use Weeks\Mersey\Traits\PassThruTrait;
 
 class Server
 {
     use PassThruTrait;
-
-    /**
-     * @var Ping
-     */
-    protected $pingService;
 
     /**
      * Name of the server

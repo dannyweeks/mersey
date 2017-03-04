@@ -7,6 +7,7 @@ class Ping extends \JJG\Ping implements PingInterface
 
     /**
      * @param string $host
+     *
      * @return $this
      */
     public function setHost($host)
@@ -18,6 +19,7 @@ class Ping extends \JJG\Ping implements PingInterface
 
     /**
      * @param int $port
+     *
      * @return $this
      */
     public function setPort($port)
@@ -29,6 +31,7 @@ class Ping extends \JJG\Ping implements PingInterface
 
     /**
      * @param int $ttl
+     *
      * @return $this
      */
     public function setTtl($ttl)
