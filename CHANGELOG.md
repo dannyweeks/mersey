@@ -3,7 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] - 2015-03-29
+## Unreleased
+### Changed
+- Improved CS and added better comments/DocBlocks
+
+## [2.0.0] - 2016-03-29
 ### Added
 - Projects have access to global scripts defined in scripts.json.
 - Create new servers with an interactive prompt using the `add` command.

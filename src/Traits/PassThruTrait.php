@@ -8,7 +8,8 @@ trait PassThruTrait
      * Execute terminal command.
      *
      * @param $command
-     * @return mixed|void
+     *
+     * @return string|integer
      */
     protected function passthru($command)
     {

@@ -8,31 +8,74 @@ use Weeks\Mersey\Traits\PassThruTrait;
 class Server
 {
     use PassThruTrait;
+
     /**
      * @var Ping
      */
     protected $pingService;
-    private $name;
-    private $username;
-    private $hostname;
+
     /**
+     * Name of the server
+     *
      * @var string
      */
-    private $displayName;
+    protected $name;
+
     /**
-     * @var array
-     */
-    private $projects;
-    /**
+     * SSH Username
+     *
      * @var string
      */
-    private $sshKey;
+    protected $username;
+
     /**
+     * IP or hostname of the server
+     *
+     * @var string
+     */
+    protected $hostname;
+
+    /**
+     * Name of server to be show in UI
+     *
+     * @var string
+     */
+    protected $displayName;
+
+    /**
+     * Array of projects associated to this server
+     *
+     * @var Project[]
+     */
+    protected $projects;
+
+    /**
+     * Path to the SSH key to be used for accessing this server
+     *
+     * @var string
+     */
+    protected $sshKey;
+
+    /**
+     * Port to access this server on
+     *
      * @var integer
      */
-    private $sshPort;
-    private $mersey;
+    protected $sshPort;
 
+    /**
+     * The mersey app
+     *
+     * @var Mersey
+     */
+    protected $mersey;
+
+    /**
+     * Server constructor.
+     *
+     * @param Mersey $mersey
+     * @param string $config the config of this server
+     */
     public function __construct(Mersey $mersey, $config)
     {
         $this->mersey = $mersey;
@@ -55,6 +98,7 @@ class Server
      * Get the full SSH command tailored to this servers config.
      *
      * @param string $remoteCommand
+     *
      * @return bool|void
      */
     public function getCommand($remoteCommand = '')
@@ -69,6 +113,8 @@ class Server
     }
 
     /**
+     * Ping this server
+     *
      * @return int|bool
      */
     public function ping()
@@ -93,13 +139,15 @@ class Server
      */
     protected function getConnectionCommand()
     {
-        return sprintf("ssh -t -p %d -i %s %s@%s",$this->getSshPort(), $this->getSshKey(), $this->getUsername(), $this->getHostname());
+        return sprintf("ssh -t -p %d -i %s %s@%s", $this->getSshPort(), $this->getSshKey(), $this->getUsername(),
+            $this->getHostname());
     }
 
     /**
      * Execute a terminal command.
      *
      * @param string $command
+     *
      * @return bool|void
      */
     protected function execute($command)
@@ -157,22 +205,24 @@ class Server
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasProject($name)
     {
-        return $this->projects->first(function($key, Project $project) use ($name) {
+        return $this->projects->first(function ($key, Project $project) use ($name) {
             return $project->getName() == $name;
-        }) ? true : false ;
+        }) ? true : false;
     }
 
     /**
      * @param $name
+     *
      * @return \Weeks\Mersey\Project
      */
     public function getProject($name)
     {
-        return $this->projects->first(function($key, Project $project) use ($name) {
+        return $this->projects->first(function ($key, Project $project) use ($name) {
             return $project->getName() == $name;
         });
     }
@@ -187,6 +237,7 @@ class Server
 
     /**
      * @param string $sshKey
+     *
      * @return $this
      */
     public function setSshKey($sshKey)
@@ -206,6 +257,7 @@ class Server
 
     /**
      * @param int $sshPort
+     *
      * @return $this
      */
     public function setSshPort($sshPort)
