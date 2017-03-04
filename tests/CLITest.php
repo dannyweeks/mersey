@@ -10,6 +10,6 @@ class CLITest extends TestCase
         $output = $this->executeCommand('./mersey -vvv');
 
         $this->assertExitCode(0, $output);
-        $this->assertContains('Mersey version 2.0.0', $output);
+        $this->assertContains('Mersey version', $output);
     }
 }

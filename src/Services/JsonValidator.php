@@ -9,18 +9,20 @@ use Weeks\Mersey\Schema;
 class JsonValidator
 {
     /**
+     * The schema to validate against
+     *
      * @var Schema
      */
     protected $schema;
 
-    protected $json;
-
-    protected $errors;
-
     /**
-     * @param $json
-     * @param null $schema
+     * Validate the given json against the schema.
+     *
+     * @param string $json
+     * @param null   $schema
+     *
      * @return bool
+     *
      * @throws \Exception
      */
     public function validate($json, $schema = null)
@@ -34,11 +36,11 @@ class JsonValidator
         $validator->check($json, $schema);
 
         if (!$validator->isValid()) {
-
             $errors = $validator->getErrors();
-            $messages = collect($errors)->transform(function ($error) {
-                return $this->formatErrorMessage($error);
-            })->implode("\n");
+            $messages = collect($errors)
+                ->transform(function ($error) {
+                    return $this->formatErrorMessage($error);
+                })->implode("\n");
 
             throw new \Exception($messages);
         }
@@ -47,10 +49,13 @@ class JsonValidator
     }
 
     /**
-     * @param mixed $schema
+     * Set the schema
+     *
+     * @param Schema $schema
+     *
      * @return $this
      */
-    public function setSchema($schema)
+    public function setSchema(Schema $schema)
     {
         $this->schema = $schema;
 
@@ -58,33 +63,13 @@ class JsonValidator
     }
 
     /**
-     * @param $json
-     * @return $this
+     * Get the ordinal version of a number.
+     *
+     * @param $number
+     *
+     * @return string
      */
-    public function getJson($json)
-    {
-        $this->json = $json;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /**
-     * @param mixed $errors
-     */
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-    }
-
-    private function ordinal($number)
+    protected function ordinal($number)
     {
         // Special case "teenth"
         if (($number / 10) % 10 != 1) {
@@ -103,7 +88,14 @@ class JsonValidator
         return $number . 'th';
     }
 
-    private function formatErrorMessage($error)
+    /**
+     * Format the error message
+     *
+     * @param $error
+     *
+     * @return string
+     */
+    protected function formatErrorMessage($error)
     {
         $message = '%2$s error. %1$s. Located: [%4$s %3$s]';
         $parts = explode('.', $error['property']);
@@ -121,6 +113,10 @@ class JsonValidator
 
         $totalParts = count($parts);
 
+        /**
+         * If there was 3 parts to the property then a project
+         * was involved with the error
+         */
         if ($totalParts >= 3) {
             $data['property'] = $parts[2];
 
@@ -128,6 +124,10 @@ class JsonValidator
 
             $message .= '->[%6$s %7$s]';
 
+            /**
+             * If there was 4 parts to the property then a script
+             * was involved with the error
+             */
             if ($totalParts >= 4) {
                 $data['property'] = $parts[3];
 
@@ -144,7 +144,14 @@ class JsonValidator
         return vsprintf($message . '.', $data);
     }
 
-    private function getSectionData($part)
+    /**
+     * Extract the data from the error
+     *
+     * @param $part
+     *
+     * @return array
+     */
+    protected function getSectionData($part)
     {
         $section = [];
         preg_match_all("/(.*)\[(\d+)\]/", $part, $matches);

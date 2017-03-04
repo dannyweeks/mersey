@@ -6,7 +6,7 @@ class Schema
 {
     protected $env;
     protected $home;
-    private $fileName;
+    protected $fileName;
 
     public function __construct($fileName, $env, $home)
     {
