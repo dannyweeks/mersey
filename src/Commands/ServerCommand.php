@@ -65,8 +65,11 @@ class ServerCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
+     * Run the command.
+     *
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -148,7 +151,7 @@ class ServerCommand extends Command
                 $command = sprintf('cd %s; %s', $project->getRoot(), $requestedScript->getCommand());
                 $command = $this->server->getCommand($command);
 
-                $this->passthru($command, $output);
+                $this->passthru($command);
 
                 break;
         }
@@ -157,6 +160,9 @@ class ServerCommand extends Command
     }
 
     /**
+     * Set the server related to this command.
+     * nb: called when creating the command.
+     *
      * @param Server $server
      */
     public function setServer(Server $server)
@@ -165,6 +171,8 @@ class ServerCommand extends Command
     }
 
     /**
+     * Show the projects for this server.
+     *
      * @param OutputInterface $output
      */
     protected function showProjects(OutputInterface $output)
@@ -178,25 +186,38 @@ class ServerCommand extends Command
             return;
         }
 
-        $output->writeln('<comment>Available projects for ' . $this->server->getDisplayName() . ': </comment>');
+        $output->writeln(
+            sprintf(
+                '<comment>Available projects for %s: </comment>',
+                $this->server->getDisplayName()
+            )
+        );
 
         $table = new Table($output);
         $table
-            ->setRows($projects->transform(function(Project $project) {
-                return [
-                    sprintf("<info>%s</info>", $project->getName())
-                ];
-            })->toArray())
-        ;
+            ->setRows(
+                $projects->transform(function (Project $project) {
+                    return [
+                        sprintf("<info>%s</info>", $project->getName())
+                    ];
+                })->toArray()
+            );
         $table->render();
 
 
-
-        $output->writeln('<comment>example use: php mersey ' . $this->server->getName() . ' <projectname></comment>');
+        $output->writeln(
+            sprintf(
+                '<comment>example use: php mersey %s <projectname></comment>',
+                $this->server->getName()
+            )
+        );
     }
 
     /**
+     * Render a project not found error.
+     *
      * @param $project
+     *
      * @return string
      */
     private function projectNotFoundError($project)
@@ -207,8 +228,11 @@ class ServerCommand extends Command
     }
 
     /**
+     * Render a script not found error.
+     *
      * @param $script
      * @param $project
+     *
      * @return string
      */
     private function scriptNotFoundError($script, $project)
@@ -219,8 +243,11 @@ class ServerCommand extends Command
     }
 
     /**
+     * Check if a given script exists.
+     *
      * @param $scriptRequested
      * @param $availableScripts
+     *
      * @return bool
      */
     protected function checkRequestedScriptExists($scriptRequested, $availableScripts)
@@ -232,9 +259,10 @@ class ServerCommand extends Command
      * Find the intent of the users request.
      *
      * @param $arguments
+     *
      * @return string
      */
-    private function getRequestType($arguments)
+    protected function getRequestType($arguments)
     {
         if (!empty($arguments['script'])) {
             return 'script';
@@ -248,7 +276,10 @@ class ServerCommand extends Command
     }
 
     /**
+     * Check if a project exists based upon it's name.
+     *
      * @param $requestedProjectName
+     *
      * @return bool
      */
     protected function checkProjectExists($requestedProjectName)
@@ -256,6 +287,15 @@ class ServerCommand extends Command
         return !empty($requestedProjectName) && $this->server->hasProject($requestedProjectName);
     }
 
+    /**
+     * Output a table of the scripts available for a given project
+     *
+     * @param OutputInterface $output
+     * @param Project         $project
+     * @param Collection      $scripts
+     *
+     * @return int
+     */
     private function showScripts(OutputInterface $output, Project $project, Collection $scripts)
     {
         if ($scripts->count() == 0) {
@@ -268,16 +308,25 @@ class ServerCommand extends Command
         $table = new Table($output);
         $table
             ->setHeaders(['Script Name', 'Description'])
-            ->setRows(collect($scripts)->transform(function(Script $script) use ($output) {
-                return [
-                    "<info>$script->name</info>",
-                    ucwords($script->description)
-                ];
-            })->toArray())
-        ;
+            ->setRows(
+                collect($scripts)
+                    ->transform(function (Script $script) use ($output) {
+                        return [
+                            "<info>$script->name</info>",
+                            ucwords($script->description)
+                        ];
+                    })->toArray()
+            );
+
         $table->render();
 
-        $output->writeln(sprintf("<comment>Example use: mersey %s %s <script name></comment>", $this->server->getName(), $project->getName()));
+        $output->writeln(
+            sprintf(
+                "<comment>Example use: mersey %s %s <script name></comment>",
+                $this->server->getName(),
+                $project->getName()
+            )
+        );
 
         return 0;
     }

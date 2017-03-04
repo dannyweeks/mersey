@@ -90,8 +90,10 @@ class AddServerCommand extends Command
             null, $required));
 
         if (in_array($serverDetails['name'], $usedNames->toArray())) {
-            $question = sprintf("'%s' is already defined. Would you like to overwrite it? (y/N)",
-                $serverDetails['name']);
+            $question = sprintf(
+                "'%s' is already defined. Would you like to overwrite it? (y/N)",
+                $serverDetails['name']
+            );
 
             if (!$this->askConfirmQuestion($question, 'error')) {
                 $output->writeln('Aborted server definition.');
@@ -99,6 +101,9 @@ class AddServerCommand extends Command
                 return 0;
             }
 
+            /**
+             * Remove the server we are going to overwrite from the config.
+             */
             $config = $config->reject(function ($item) use ($serverDetails) {
                 return $item['name'] == $serverDetails['name'];
             });
@@ -117,7 +122,6 @@ class AddServerCommand extends Command
         }
 
         $addProjects = $this->askConfirmQuestion('Define a project? (y/N)');
-
         while ($addProjects) {
             $project = [];
             $project['name'] = $this->askQuestion('Project name');

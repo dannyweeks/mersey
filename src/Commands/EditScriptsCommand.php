@@ -20,8 +20,13 @@ class EditScriptsCommand extends Command
     /**
      * @var Mersey
      */
-    private $app;
+    protected $app;
 
+    /**
+     * EditScriptsCommand constructor.
+     *
+     * @param Mersey $app
+     */
     public function __construct(Mersey $app)
     {
         parent::__construct('scripts');
@@ -40,9 +45,10 @@ class EditScriptsCommand extends Command
     /**
      * Open the config file.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @return int|null|void
+     *
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -52,6 +58,8 @@ class EditScriptsCommand extends Command
         $command = 'open ' . $this->app->getScriptsConfig(env('APP_ENV'));
 
         $this->passthru($command);
+
+        return 0;
     }
 }
 
