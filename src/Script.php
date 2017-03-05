@@ -4,13 +4,37 @@ namespace Weeks\Mersey;
 
 class Script
 {
-    public $name, $description, $command;
+    /**
+     * The name of this script
+     *
+     * @var string
+     */
+    public $name;
+
+    /**
+     * The description of this script
+     *
+     * @var string
+     */
+    public $description;
+
+    /**
+     * The command for this script
+     *
+     * @var string
+     */
+    public $command;
 
     /**
      * Additional commands after a user has ran a script has ran.
      */
     const SCRIPT_COMMAND = "; read -p \"Remote script completed. Press enter to continue..\"; exit";
 
+    /**
+     * Script constructor.
+     *
+     * @param $scriptConfig
+     */
     public function __construct($scriptConfig)
     {
         $this->name = $scriptConfig->name;
@@ -18,6 +42,11 @@ class Script
         $this->command = $scriptConfig->command;
     }
 
+    /**
+     * Get the fully qualified command
+     *
+     * @return string
+     */
     public function getCommand()
     {
         return $this->command . self::SCRIPT_COMMAND;

@@ -4,10 +4,34 @@ namespace Weeks\Mersey;
 
 class Schema
 {
+    /**
+     * The app environment
+     *
+     * @var string
+     */
     protected $env;
+
+    /**
+     * Path the user's home
+     *
+     * @var string
+     */
     protected $home;
+
+    /**
+     * The schema file name
+     *
+     * @var string
+     */
     protected $fileName;
 
+    /**
+     * Schema constructor.
+     *
+     * @param $fileName
+     * @param $env
+     * @param $home
+     */
     public function __construct($fileName, $env, $home)
     {
         $this->env = $env;
@@ -15,6 +39,11 @@ class Schema
         $this->fileName = $fileName;
     }
 
+    /**
+     * Resolve the path to the schema.
+     *
+     * @return string
+     */
     public function resolve()
     {
         $globalSchema = $this->home . '/.composer/vendor/dannyweeks/mersey/' . $this->fileName;
@@ -27,7 +56,9 @@ class Schema
     }
 
     /**
-     * @return mixed
+     * Get the file name.
+     *
+     * @return string
      */
     public function getFileName()
     {

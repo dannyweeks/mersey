@@ -14,6 +14,23 @@ use Symfony\Component\Console\Input\InputOption;
 class Console extends Application
 {
     /**
+     * For improved UX, try to interact with server without the need for 'server:' prefix first.
+     *
+     * @param InputInterface $input
+     *
+     * @return string
+     */
+    protected function getCommandName(InputInterface $input)
+    {
+        try {
+            return $this->find('server:' . $input->getFirstArgument())
+                ->getName();
+        } catch (CommandNotFoundException $e) {
+            return parent::getCommandName($input);
+        }
+    }
+
+    /**
      * Gets the default input definition.
      *
      * @return InputDefinition An InputDefinition instance
@@ -31,22 +48,5 @@ class Console extends Application
 //            new InputOption('--no-ansi', '', InputOption::VALUE_NONE, 'Disable ANSI output'),
 //            new InputOption('--no-interaction', '-n', InputOption::VALUE_NONE, 'Do not ask any interactive question'),
         ));
-    }
-
-    /**
-     * For improved UX, try to interact with server without the need for 'server:' prefix first.
-     *
-     * @param InputInterface $input
-     *
-     * @return string
-     */
-    protected function getCommandName(InputInterface $input)
-    {
-        try {
-            return $this->find('server:' . $input->getFirstArgument())
-                ->getName();
-        } catch (CommandNotFoundException $e) {
-            return parent::getCommandName($input);
-        }
     }
 }

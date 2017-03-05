@@ -131,6 +131,8 @@ class Server
     }
 
     /**
+     * Get the server name.
+     *
      * @return string
      */
     public function getName()
@@ -139,6 +141,8 @@ class Server
     }
 
     /**
+     * Get the ssh username
+     *
      * @return string
      */
     public function getUsername()
@@ -147,6 +151,8 @@ class Server
     }
 
     /**
+     * Get the hostname
+     *
      * @return string
      */
     public function getHostname()
@@ -155,6 +161,8 @@ class Server
     }
 
     /**
+     * Get the UI server name
+     *
      * @return string
      */
     public function getDisplayName()
@@ -163,6 +171,8 @@ class Server
     }
 
     /**
+     * Get the server projects
+     *
      * @return array
      */
     public function getProjects()
@@ -171,6 +181,8 @@ class Server
     }
 
     /**
+     * Add a project to this server.
+     *
      * @param Project $project
      */
     public function addProject(Project $project)
@@ -179,6 +191,8 @@ class Server
     }
 
     /**
+     * Check if this server has a project by the name
+     *
      * @param $name
      *
      * @return bool
@@ -191,9 +205,11 @@ class Server
     }
 
     /**
+     * Get a project by it's name
+     *
      * @param $name
      *
-     * @return \Weeks\Mersey\Project
+     * @return Project
      */
     public function getProject($name)
     {
@@ -215,6 +231,8 @@ class Server
     }
 
     /**
+     * Get the SSH key path
+     *
      * @return string
      */
     public function getSshKey()
@@ -223,6 +241,8 @@ class Server
     }
 
     /**
+     * Get the ssh port.
+     *
      * @return int
      */
     public function getSshPort()

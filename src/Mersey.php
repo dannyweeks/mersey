@@ -80,6 +80,8 @@ class Mersey extends Container
     }
 
     /**
+     * Create a server from config
+     *
      * @param $serverConfig
      *
      * @return Server

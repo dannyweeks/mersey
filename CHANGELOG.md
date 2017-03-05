@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Improved CS and added better comments/DocBlocks
 
+### Added
+- Try to guess a project if the input does not match a real project name based upon the Levenshtein distance
+
 ## [2.0.0] - 2016-03-29
 ### Added
 - Projects have access to global scripts defined in scripts.json.

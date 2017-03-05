@@ -47,15 +47,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('/Test Exit Code: ' . $code . '/i', $output);
     }
 
-    protected function getInputStream($input)
-    {
-        $stream = fopen('php://memory', 'r+', false);
-        fputs($stream, $input);
-        rewind($stream);
-
-        return $stream;
-    }
-
     protected function getMerseyMock()
     {
         $mersey = m::mock(Mersey::class);

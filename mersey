@@ -1,18 +1,23 @@
 #!/usr/bin/env php
 <?php
-
 use Weeks\Mersey\Console;
 use Weeks\Mersey\Schema;
 use Weeks\Mersey\Services\JsonValidator;
 use Weeks\Mersey\Services\Ping\JJGPing;
 use Weeks\Mersey\Services\Ping\PingInterface;
 
+/**
+ * Include composer autoloader; either from a local install or global install
+ */
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require __DIR__ . '/vendor/autoload.php';
 } else {
     require __DIR__ . '/../../autoload.php';
 }
 
+/**
+ * Load environment variables from the .env file if it exists.
+ */
 if (file_exists(__DIR__ . '/.env')) {
     $dotEnv = new Dotenv\Dotenv(__DIR__);
     $dotEnv->load();
@@ -25,6 +30,9 @@ $mersey = new \Weeks\Mersey\Mersey(
     new Console('Mersey', MERSEY_VERSION)
 );
 
+/**
+ * Bind services to the container.
+ */
 $mersey->singleton(JsonValidator::class, function () {
     return new JsonValidator();
 });
@@ -33,6 +41,9 @@ $mersey->singleton(PingInterface::class, function () {
     return new JJGPing('127.0.0.1', 2);
 });
 
+/**
+ * Bind validation schemas to the container
+ */
 $mersey->bind('servers_schema', function () use ($env, $home) {
     return new Schema('servers-schema.json', $env, $home);
 });
@@ -45,9 +56,16 @@ $mersey->bind('scripts_schema', function () use ($env, $home) {
 $validator = $mersey->make(JsonValidator::class);
 $serversSchema = $mersey->make('servers_schema');
 $scriptsSchema = $mersey->make('scripts_schema');
+
+/**
+ * Load the config files
+ */
 $servers = $mersey->loadServerConfig($env);
 $scripts = $mersey->loadScriptConfig($env);
 
+/**
+ * Validate the config files against their schemas.
+ */
 try {
     $validator->setSchema($serversSchema)->validate($servers);
     $validator->setSchema($scriptsSchema)->validate($scripts);
@@ -55,6 +73,13 @@ try {
     $mersey->renderException($e);
 }
 
+/**
+ * Register the scripts and servers from the config files
+ */
 $mersey->registerGlobalScripts($scripts);
 $mersey->registerServers($servers);
+
+/**
+ * Run mersey
+ */
 $mersey->run();

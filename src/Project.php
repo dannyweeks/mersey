@@ -44,6 +44,8 @@ class Project
     }
 
     /**
+     * Get the root project command
+     *
      * @return string
      */
     public function getRootCommand()
@@ -118,5 +120,4 @@ class Project
 
         return $collection;
     }
-
 }
