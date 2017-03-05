@@ -21,7 +21,6 @@ if (file_exists(__DIR__ . '/.env')) {
 $env = env('APP_ENV', 'production');
 $home = env('HOME');
 
-define('MERSEY_VERSION', '2.0.0');
 $mersey = new \Weeks\Mersey\Mersey(
     new Console('Mersey', MERSEY_VERSION)
 );

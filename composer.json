@@ -17,7 +17,10 @@
         "psr-4": {
             "Weeks\\Mersey\\": "src/"
         },
-        "files": ["src/helpers.php"]
+        "files": [
+            "src/defines.php",
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "classmap": ["tests/TestCase.php"],
