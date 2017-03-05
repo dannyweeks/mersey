@@ -1,10 +1,13 @@
 <?php
 
 use \Mockery as m;
+use Ofbeaton\Console\Tester\UnhandledQuestionException;
+use Symfony\Component\Console\Question\Question;
 use Weeks\Mersey\Mersey;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
+    use \Ofbeaton\Console\Tester\QuestionTester;
 
     public function tearDown()
     {
@@ -58,6 +61,19 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $mersey = m::mock(Mersey::class);
 
         return $mersey;
+    }
+
+    protected function mockAnswersUsingArray($command, array $questions)
+    {
+        $this->mockQuestionHelper($command, function ($text, $order, Question $question) use ($questions) {
+            foreach ($questions as $q) {
+                if (stripos($text, $q[0]) !== false) {
+                    return $q[1];
+                }
+            }
+
+            throw new UnhandledQuestionException();
+        });
     }
 }
 

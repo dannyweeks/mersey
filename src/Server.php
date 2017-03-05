@@ -203,6 +203,18 @@ class Server
     }
 
     /**
+     * Get an array of the server's project names
+     *
+     * @return string[]
+     */
+    public function getProjectNames()
+    {
+        return $this->projects->map(function (Project $project) {
+            return $project->getName();
+        })->toArray();
+    }
+
+    /**
      * @return string
      */
     public function getSshKey()

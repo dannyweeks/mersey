@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Weeks\Mersey\Mersey;
 use Weeks\Mersey\Project;
 use Weeks\Mersey\Script;
@@ -102,7 +103,7 @@ class ServerCommand extends Command
             return 0;
         }
 
-        if (!$this->app->serverIsAccessible($this->server) && !$input->getOption('force')) {
+        if (!$input->getOption('force') && !$this->app->serverIsAccessible($this->server)) {
             $output->writeln(sprintf("<error>%s is unreachable.</error>", $this->server->getDisplayName()));
 
             return 1;
@@ -110,9 +111,22 @@ class ServerCommand extends Command
 
         if ($requestedProjectName && !$this->checkProjectExists($requestedProjectName)) {
 
-            $output->writeln($this->projectNotFoundError($requestedProjectName));
+            /**
+             * The user didnt input a valid project, ask them if they mean the closet match
+             */
+            $closest = $this->askDidYouMeanQuestion(
+                $input,
+                $output,
+                $requestedProjectName
+            );
 
-            return 1;
+            if (!$closest) {
+                $output->writeln($this->projectNotFoundError($requestedProjectName));
+
+                return 1;
+            }
+
+            $requestedProjectName = $closest;
         }
 
         $project = $this->server->getProject($requestedProjectName);
@@ -243,7 +257,7 @@ class ServerCommand extends Command
      *
      * @return string
      */
-    private function projectNotFoundError($project)
+    protected function projectNotFoundError($project)
     {
         $format = "<error>There is no project named '%s' associated with the %s</error>";
 
@@ -258,7 +272,7 @@ class ServerCommand extends Command
      *
      * @return string
      */
-    private function scriptNotFoundError($script, $project)
+    protected function scriptNotFoundError($script, $project)
     {
         $format = "<error>There is no script named '%s' associated with the '%s' project on the %s</error>";
 
@@ -319,7 +333,7 @@ class ServerCommand extends Command
      *
      * @return int
      */
-    private function showScripts(OutputInterface $output, Project $project, Collection $scripts)
+    protected function showScripts(OutputInterface $output, Project $project, Collection $scripts)
     {
         if ($scripts->count() == 0) {
             $output->writeln('<error>No scripts for this project.</error>');
@@ -352,5 +366,61 @@ class ServerCommand extends Command
         );
 
         return 0;
+    }
+
+    /**
+     * Find the closest match to the requested name.
+     *
+     * @param $name
+     *
+     * @return string|null
+     */
+    protected function findBestMatchProject($name)
+    {
+        return collect($this->server->getProjectNames())
+            ->sortBy(function ($word) use ($name) {
+                return levenshtein($name, $word);
+            })->first();
+    }
+
+    /**
+     * Ask the user if they meant to input the closest matching project name
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param string          $requestedProjectName
+     *
+     * @return string|boolean
+     */
+    protected function askDidYouMeanQuestion(
+        InputInterface $input,
+        OutputInterface $output,
+        $requestedProjectName
+    )
+    {
+        $closest = $this->findBestMatchProject($requestedProjectName);
+
+        /**
+         * If the closest match is null the server doesn't have any projects.
+         */
+        if (is_null($closest)) {
+            return false;
+        }
+
+        $question = new ConfirmationQuestion(
+            "<question>Did you mean the project '$closest'?</question> "
+        );
+
+        $response = $this->getHelper('question')
+            ->ask($input, $output, $question);
+
+        /**
+         * The user responded 'No'; therefore return false.
+         */
+        if (!$response) {
+            return false;
+        }
+
+        return $closest;
     }
 }

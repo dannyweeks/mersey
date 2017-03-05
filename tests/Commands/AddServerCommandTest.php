@@ -9,8 +9,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class AddServerCommandTest extends TestCase
 {
-    use QuestionTester;
-
     /**
      * @test
      */
@@ -184,19 +182,6 @@ class AddServerCommandTest extends TestCase
         ]);
 
         $this->assertSame(0, $tester->getStatusCode(), 'Exit code is showing an error');
-    }
-
-    protected function mockAnswersUsingArray($command, array $questions)
-    {
-        $this->mockQuestionHelper($command, function ($text, $order, Question $question) use ($questions) {
-            foreach ($questions as $q) {
-                if (stripos($text, $q[0]) !== false) {
-                    return $q[1];
-                }
-            }
-
-            throw new UnhandledQuestionException();
-        });
     }
 
     protected function getApplication($mersey)
