@@ -3,12 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## [2.1.0] - 2017-03-05
 ### Changed
 - Improved CS and added better comments/DocBlocks
 
 ### Added
-- Try to guess a project if the input does not match a real project name based upon the Levenshtein distance
+- Try to suggest a project if the input does not match a real project name based upon the Levenshtein distance
 
 ## [2.0.0] - 2016-03-29
 ### Added
