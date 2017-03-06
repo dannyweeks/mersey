@@ -1,10 +1,7 @@
 <?php
 
-use Ofbeaton\Console\Tester\QuestionTester;
-use Ofbeaton\Console\Tester\UnhandledQuestionException;
 use Symfony\Component\Console\Application;
 use Mockery as m;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class AddServerCommandTest extends TestCase

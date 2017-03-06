@@ -11,6 +11,8 @@ use Weeks\Mersey\Commands\EditScriptsCommand;
 use Weeks\Mersey\Commands\EditServersCommand;
 use Weeks\Mersey\Commands\ServerCommand;
 use Illuminate\Container\Container;
+use Weeks\Mersey\Components\Script;
+use Weeks\Mersey\Components\Server;
 use Weeks\Mersey\Services\Ping\PingInterface;
 
 class Mersey extends Container
@@ -43,7 +45,7 @@ class Mersey extends Container
     /**
      * Mersey constructor.
      *
-     * @param Application   $console
+     * @param Application $console
      */
     public function __construct(Application $console)
     {

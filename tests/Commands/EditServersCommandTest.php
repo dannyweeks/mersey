@@ -4,7 +4,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Tester\CommandTester;
 use Mockery as m;
-use Weeks\Mersey\Server;
 
 class EditServersCommandTest extends TestCase
 {

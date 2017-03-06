@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-use Weeks\Mersey\Console;
-use Weeks\Mersey\Schema;
+use Weeks\Mersey\Components\Console;
+use Weeks\Mersey\Components\Schema;
 use Weeks\Mersey\Services\JsonValidator;
 use Weeks\Mersey\Services\Ping\JJGPing;
 use Weeks\Mersey\Services\Ping\PingInterface;

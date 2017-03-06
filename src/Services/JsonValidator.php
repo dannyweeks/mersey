@@ -4,7 +4,7 @@ namespace Weeks\Mersey\Services;
 
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
-use Weeks\Mersey\Schema;
+use Weeks\Mersey\Components\Schema;
 
 class JsonValidator
 {

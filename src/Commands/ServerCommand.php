@@ -10,9 +10,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Weeks\Mersey\Mersey;
-use Weeks\Mersey\Project;
-use Weeks\Mersey\Script;
-use Weeks\Mersey\Server;
+use Weeks\Mersey\Components\Project;
+use Weeks\Mersey\Components\Script;
+use Weeks\Mersey\Components\Server;
 use Weeks\Mersey\Traits\PassThruTrait;
 
 class ServerCommand extends Command
@@ -21,7 +21,7 @@ class ServerCommand extends Command
     use PassThruTrait;
 
     /**
-     * @var \Weeks\Mersey\Server
+     * @var Server
      */
     protected $server;
 
@@ -396,8 +396,7 @@ class ServerCommand extends Command
         InputInterface $input,
         OutputInterface $output,
         $requestedProjectName
-    )
-    {
+    ) {
         $closest = $this->findBestMatchProject($requestedProjectName);
 
         /**

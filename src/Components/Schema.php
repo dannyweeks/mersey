@@ -1,6 +1,6 @@
 <?php
 
-namespace Weeks\Mersey;
+namespace Weeks\Mersey\Components;
 
 class Schema
 {
