@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- New option to show the SSH command that would be used to connect to the server `mersey servername --command`
+
 ## [2.1.0] - 2017-03-05
 ### Changed
 - Improved CS and added better comments/DocBlocks

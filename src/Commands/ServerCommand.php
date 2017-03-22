@@ -80,6 +80,12 @@ class ServerCommand extends Command
                 'f',
                 InputOption::VALUE_NONE,
                 'Skip ping test.'
+            )
+            ->addOption(
+                'command',
+                null,
+                InputOption::VALUE_NONE,
+                'Display the SSH command used to connect to this server'
             );
     }
 
@@ -96,6 +102,14 @@ class ServerCommand extends Command
         $this->output = $output;
         $arguments = $input->getArguments();
         $requestedProjectName = $arguments['project'];
+
+        if ($input->getOption('command')) {
+            $this->output->writeln(
+                $this->server->getCommand()
+            );
+
+            return 0;
+        }
 
         if ($input->getOption('projects')) {
             $this->showProjects($output);
