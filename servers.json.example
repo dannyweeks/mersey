@@ -9,8 +9,11 @@
                 "name": "projectone",
                 "root": "/var/www/projectone",
                 "scripts": {
-                    "clean": "/var/www/projectone/./clean",
-                    "deploy": "/var/www/projectone/./deploy && ls"
+                    {
+                        "name": "taillog",
+                        "description": "Tail application log",
+                        "command": "tail -f runtime/logs/app.log"
+                    }
                 }
             }
         ]
